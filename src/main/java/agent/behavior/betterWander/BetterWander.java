@@ -77,4 +77,27 @@ public class BetterWander extends Behavior  {
         // No viable moves, skip turn
         agentAction.skip();
     }
+
+    private void betterWander(AgentState agentState, AgentAction agentAction) {
+        Perception perception = agentState.getPerception();
+        List<CellPerception> packets = perception.getPacketCells();
+
+        if(packets.isEmpty()){
+            wander(agentState, agentAction);
+            return;
+        }
+
+        CellPerception minCell = packets.get(0);
+        int minDistance = perception.manhattanDistance(minCell.getX(), minCell.getY(), agentState.getX(), agentState.getY());
+        for(int i = 1; i < packets.size(); i++) {
+            int distance = perception.manhattanDistance(packets.get(i).getX(), packets.get(i).getY(), agentState.getX(), agentState.getY());
+            if(distance < minDistance){
+                minDistance = distance;
+                minCell = packets.get(i);
+            }
+        }
+
+        // Find the closest walkable move in the direction of minCell
+
+    }
 }

@@ -400,4 +400,19 @@ public class Perception {
             cells[i][j] = null;
         } catch (ArrayIndexOutOfBoundsException ignored) {}
     }
+
+    // Our own functions
+
+    public List<CellPerception> getPacketCells(){
+        List<CellPerception> cellsWithPackets = new ArrayList<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell.containsPacket()){
+                    cellsWithPackets.add(cell);
+                }
+            }
+        }
+        return cellsWithPackets;
+    }
+
 }
