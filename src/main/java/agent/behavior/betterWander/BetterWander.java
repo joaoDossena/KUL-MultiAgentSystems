@@ -4,7 +4,9 @@ import agent.AgentAction;
 import agent.AgentCommunication;
 import agent.AgentState;
 import agent.behavior.Behavior;
+import environment.CellPerception;
 import environment.Coordinate;
+import environment.Perception;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,34 @@ public class BetterWander extends Behavior  {
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
+        if(agentState.hasCarry()){
+            Perception perception = agentState.getPerception();
+            var neighbours = perception.getNeighbours();
+
+            for(CellPerception neighbor : neighbours){
+                if(neighbor != null && neighbor.containsDestination(agentState.getCarry().get().getColor())){
+                    agentAction.putPacket(neighbor.getX(), neighbor.getY());
+                    return;
+                }
+            }
+        }
+
+        else{
+            Perception perception = agentState.getPerception();
+            var neighbours = perception.getNeighbours();
+
+            for(CellPerception neighbor : neighbours){
+                if(neighbor != null && neighbor.containsPacket()){
+                    agentAction.pickPacket(neighbor.getX(), neighbor.getY());
+                    return;
+                }
+            }
+        }
+
+        wander(agentState, agentAction);
+    }
+
+    private void wander(AgentState agentState, AgentAction agentAction){
         // Potential moves an agent can make (radius of 1 around the agent)
         List<Coordinate> moves = new ArrayList<>(List.of(
                 new Coordinate(1, 1), new Coordinate(-1, -1),
