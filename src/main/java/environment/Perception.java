@@ -1,6 +1,7 @@
 package environment;
 
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -401,7 +402,10 @@ public class Perception {
         } catch (ArrayIndexOutOfBoundsException ignored) {}
     }
 
-    // Our own functions
+    //--------------------------------------------------------------------------
+    //		OUR OWN METHODS
+    //--------------------------------------------------------------------------
+
 
     public List<CellPerception> getPacketCells(){
         List<CellPerception> cellsWithPackets = new ArrayList<>();
@@ -413,6 +417,18 @@ public class Perception {
             }
         }
         return cellsWithPackets;
+    }
+
+    public List<CellPerception> getDestinationCells(Color color){
+        List<CellPerception> cellsWithDestination = new ArrayList<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell.containsDestination(color)){
+                    cellsWithDestination.add(cell);
+                }
+            }
+        }
+        return cellsWithDestination;
     }
 
 }

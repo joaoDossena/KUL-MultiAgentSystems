@@ -31,6 +31,8 @@ public class BetterWander extends Behavior  {
                     return;
                 }
             }
+            walkTowardsClosestDestination(agentState, agentAction);
+            return;
         }
 
         else{
@@ -43,9 +45,12 @@ public class BetterWander extends Behavior  {
                     return;
                 }
             }
+
+            walkTowardsClosestPacket(agentState, agentAction);
+            return;
         }
 
-        wander(agentState, agentAction);
+//        wander(agentState, agentAction);
     }
 
     private void wander(AgentState agentState, AgentAction agentAction){
@@ -78,15 +83,20 @@ public class BetterWander extends Behavior  {
         agentAction.skip();
     }
 
-    private void betterWander(AgentState agentState, AgentAction agentAction) {
+    //TODO: refactor this horrible code later
+    private void walkTowardsClosestPacket(AgentState agentState, AgentAction agentAction) {
         Perception perception = agentState.getPerception();
         List<CellPerception> packets = perception.getPacketCells();
 
+        // If no packets in perception, wander randomly.
         if(packets.isEmpty()){
             wander(agentState, agentAction);
             return;
         }
 
+        // Otherwise, look for closest packet.
+        // Now we're using manhattan distance, but in the future we might
+        // need to account for walls and stuff.
         CellPerception minCell = packets.get(0);
         int minDistance = perception.manhattanDistance(minCell.getX(), minCell.getY(), agentState.getX(), agentState.getY());
         for(int i = 1; i < packets.size(); i++) {
@@ -98,6 +108,78 @@ public class BetterWander extends Behavior  {
         }
 
         // Find the closest walkable move in the direction of minCell
+        List<Coordinate> moves = new ArrayList<>(List.of(
+                new Coordinate(1, 1), new Coordinate(-1, -1),
+                new Coordinate(1, -1), new Coordinate(-1, 1),
+                new Coordinate(1, 0), new Coordinate(-1, 0),
+                new Coordinate(0, 1), new Coordinate(0, -1)
+        ));
 
+        Coordinate minMove = moves.get(0);
+        minDistance = perception.manhattanDistance(agentState.getX() +  minMove.getX(), agentState.getY() + minMove.getY(), minCell.getX(), minCell.getY());
+
+        for (int i = 1; i < moves.size(); i++) {
+            Coordinate move = moves.get(i);
+            int x = move.getX();
+            int y = move.getY();
+            int distanceAfterMove = perception.manhattanDistance(agentState.getX() + x, agentState.getY() + y, minCell.getX(), minCell.getY());
+            if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()
+                && distanceAfterMove < minDistance) {
+                minMove = move;
+                minDistance = distanceAfterMove;
+            }
+        }
+
+        agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());
+    }
+
+    //TODO: refactor this horrible code later
+    private void walkTowardsClosestDestination(AgentState agentState, AgentAction agentAction) {
+        Perception perception = agentState.getPerception();
+        List<CellPerception> destinations = perception.getDestinationCells(agentState.getCarry().get().getColor());
+
+        // If no destinations in perception, wander randomly.
+        if(destinations.isEmpty()){
+            wander(agentState, agentAction);
+            return;
+        }
+
+        // Otherwise, look for closest destination.
+        // Now we're using manhattan distance, but in the future we might
+        // need to account for walls and stuff.
+        CellPerception minCell = destinations.get(0);
+        int minDistance = perception.manhattanDistance(minCell.getX(), minCell.getY(), agentState.getX(), agentState.getY());
+        for(int i = 1; i < destinations.size(); i++) {
+            int distance = perception.manhattanDistance(destinations.get(i).getX(), destinations.get(i).getY(), agentState.getX(), agentState.getY());
+            if(distance < minDistance){
+                minDistance = distance;
+                minCell = destinations.get(i);
+            }
+        }
+
+        // Find the closest walkable move in the direction of minCell
+        List<Coordinate> moves = new ArrayList<>(List.of(
+                new Coordinate(1, 1), new Coordinate(-1, -1),
+                new Coordinate(1, -1), new Coordinate(-1, 1),
+                new Coordinate(1, 0), new Coordinate(-1, 0),
+                new Coordinate(0, 1), new Coordinate(0, -1)
+        ));
+
+        Coordinate minMove = moves.get(0);
+        minDistance = perception.manhattanDistance(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY(), minCell.getX(), minCell.getY());
+
+        for (int i = 1; i < moves.size(); i++) {
+            Coordinate move = moves.get(i);
+            int x = move.getX();
+            int y = move.getY();
+            int distanceAfterMove = perception.manhattanDistance(agentState.getX() + x, agentState.getY() + y, minCell.getX(), minCell.getY());
+            if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()
+                    && distanceAfterMove < minDistance) {
+                minMove = move;
+                minDistance = distanceAfterMove;
+            }
+        }
+
+        agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());
     }
 }
