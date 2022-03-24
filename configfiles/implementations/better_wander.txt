@@ -1,0 +1,8 @@
+description "Randomly wandering around. Picking and delivering packages when neighboring"
+
+nbStates 1
+1 agent.behavior.wander.BetterWander
+
+nbArgs 0
+
+nbChanges 0
