@@ -431,4 +431,36 @@ public class Perception {
         return cellsWithDestination;
     }
 
+    public CellPerception getClosestCell(List<CellPerception> possibleCells, int x, int y){
+        // TODO: Now we're using manhattan distance, but in the future we might need to account for walls and stuff.
+        CellPerception minCell = possibleCells.get(0);
+        int minDistance = manhattanDistance(minCell.getX(), minCell.getY(), x, y);
+        for(int i = 1; i < possibleCells.size(); i++) {
+            int distance = manhattanDistance(possibleCells.get(i).getX(), possibleCells.get(i).getY(), x, y);
+            if(distance < minDistance){
+                minDistance = distance;
+                minCell = possibleCells.get(i);
+            }
+        }
+        return minCell;
+    }
+
+    public Coordinate getShortestMoveToCell(CellPerception cell, List<Coordinate> moves, int agentX, int agentY) {
+        Coordinate minMove = moves.get(0);
+        int minDistance = manhattanDistance(agentX +  minMove.getX(), agentY + minMove.getY(), cell.getX(), cell.getY());
+
+        for (int i = 1; i < moves.size(); i++) {
+            Coordinate move = moves.get(i);
+            int x = move.getX();
+            int y = move.getY();
+            int distanceAfterMove = manhattanDistance(agentX + x, agentY + y, cell.getX(), cell.getY());
+            if (getCellPerceptionOnRelPos(x, y) != null && getCellPerceptionOnRelPos(x, y).isWalkable()
+                    && distanceAfterMove < minDistance) {
+                minMove = move;
+                minDistance = distanceAfterMove;
+            }
+        }
+        return minMove;
+    }
+
 }
