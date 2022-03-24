@@ -82,7 +82,7 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
      * Initialize a new instance of AgentImp with id <ID>. Every new AgentImp instance is initialized with an empty buffer for incoming messages and an empty
      * buffer for outgoing mails.
      *
-     * @param ID The id of this AgentImp instance.
+     * @param id The id of this AgentImp instance.
      * @post new.getName()==name
      * @post new.getID()==ID
      * @post new.getMailBuffer() <> null
