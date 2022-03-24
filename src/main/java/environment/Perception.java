@@ -1,6 +1,7 @@
 package environment;
 
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -367,20 +368,20 @@ public class Perception {
             for (int j = 0; j < maxY; j++) {
                 if (getCellAt(i, j) != null) {
                     if (i + 1 >= maxX || getCellAt(i + 1, j) == null) {
-                        shape.add(new LinePoints(new Coordinate(offsetX + i + 1, offsetY + j), 
-                            new Coordinate(offsetX + i + 1, offsetY + j + 1)));
+                        shape.add(new LinePoints(new Coordinate(offsetX + i + 1, offsetY + j),
+                                new Coordinate(offsetX + i + 1, offsetY + j + 1)));
                     }
                     if (i - 1 < 0 || getCellAt(i - 1, j) == null) {
-                        shape.add(new LinePoints(new Coordinate(offsetX + i, offsetY + j), 
-                            new Coordinate(offsetX + i, offsetY + j + 1)));
+                        shape.add(new LinePoints(new Coordinate(offsetX + i, offsetY + j),
+                                new Coordinate(offsetX + i, offsetY + j + 1)));
                     }
                     if (j + 1 >= maxY || getCellAt(i, j + 1) == null) {
-                        shape.add(new LinePoints(new Coordinate(offsetX + i, offsetY + j + 1), 
-                            new Coordinate(offsetX + i + 1, offsetY + j + 1)));
+                        shape.add(new LinePoints(new Coordinate(offsetX + i, offsetY + j + 1),
+                                new Coordinate(offsetX + i + 1, offsetY + j + 1)));
                     }
                     if (j - 1 < 0 || getCellAt(i, j - 1) == null) {
-                        shape.add(new LinePoints(new Coordinate(offsetX + i, offsetY + j), 
-                            new Coordinate(offsetX + i + 1, offsetY + j)));
+                        shape.add(new LinePoints(new Coordinate(offsetX + i, offsetY + j),
+                                new Coordinate(offsetX + i + 1, offsetY + j)));
                     }
                 }
             }
@@ -400,4 +401,70 @@ public class Perception {
             cells[i][j] = null;
         } catch (ArrayIndexOutOfBoundsException ignored) {}
     }
+
+    //--------------------------------------------------------------------------
+    //		OUR OWN METHODS
+    //--------------------------------------------------------------------------
+
+
+    public List<CellPerception> getPacketCells(){
+        List<CellPerception> cellsWithPackets = new ArrayList<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.containsPacket()){
+                    cellsWithPackets.add(cell);
+                }
+            }
+        }
+        return cellsWithPackets;
+    }
+
+    public List<CellPerception> getDestinationCells(Color color){
+        List<CellPerception> cellsWithDestination = new ArrayList<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.containsDestination(color)){
+                    cellsWithDestination.add(cell);
+                }
+            }
+        }
+        return cellsWithDestination;
+    }
+
+    public CellPerception getClosestCell(List<CellPerception> possibleCells, int x, int y){
+        // TODO: Now we're using manhattan distance, but in the future we might need to account for walls and stuff.
+        CellPerception minCell = possibleCells.get(0);
+        int minDistance = manhattanDistance(minCell.getX(), minCell.getY(), x, y);
+        for(int i = 1; i < possibleCells.size(); i++) {
+            int distance = manhattanDistance(possibleCells.get(i).getX(), possibleCells.get(i).getY(), x, y);
+            if(distance < minDistance){
+                minDistance = distance;
+                minCell = possibleCells.get(i);
+            }
+        }
+        return minCell;
+    }
+
+    public Coordinate getShortestMoveToCell(CellPerception cell, List<Coordinate> moves, int agentX, int agentY) {
+        Coordinate minMove = moves.get(0);
+        int minDistance = -1;
+
+        for (int i = 1; i < moves.size(); i++) {
+            Coordinate move = moves.get(i);
+            int x = move.getX();
+            int y = move.getY();
+            int distanceAfterMove = manhattanDistance(agentX + x, agentY + y, cell.getX(), cell.getY());
+            if (getCellPerceptionOnRelPos(x, y) != null && getCellPerceptionOnRelPos(x, y).isWalkable())
+            {
+                if(minDistance== -1 || distanceAfterMove<minDistance){
+                    minMove = move;
+                    minDistance = distanceAfterMove;
+                }
+
+            }
+        }
+        return minMove;
+    }
+
 }
+
