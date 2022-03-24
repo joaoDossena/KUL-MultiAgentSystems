@@ -1,19 +1,24 @@
 package agent.behavior.graph;
 
 import agent.AgentAction;
-import agent.AgentCommunication;
 import agent.AgentState;
-import agent.behavior.Behavior;
+import agent.behavior.wander.Wander;
+import environment.CellPerception;
+import environment.Perception;
 
-public class NoPacketBehavior extends Behavior {
-
-    @Override
-    public void communicate(AgentState agentState, AgentCommunication agentCommunication) {
-        // No communication
-    }
+public class NoPacketBehavior extends Wander {
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
 
+        Perception perception = agentState.getPerception();
+
+        for (CellPerception neighbor : perception.getNeighbours()) {
+            if (neighbor != null && neighbor.containsPacket()) {
+                agentAction.pickPacket(neighbor.getX(), neighbor.getY());
+                return;
+            }
+        }
+        super.act(agentState, agentAction);
     }
 }
