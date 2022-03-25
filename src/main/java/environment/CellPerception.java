@@ -120,11 +120,15 @@ public class CellPerception {
     public Optional<AgentRep> getAgentRepresentation() {
         return Optional.ofNullable(this.getRepOfType(AgentRep.class));
     }
-    /**
-     * Check if a destination with the specified color is present in this cell perception.
-     * @param color The color to check.
-     * @return True if a destination of the given color is present, false otherwise.
-     */
+
+
+    //TODO OUR IMPLEMENTATION
+    public DestinationRep getDestination(){
+        var destination = this.getRepOfType(DestinationRep.class);
+        if (destination != null)  return  destination;
+        return null;
+    }
+
     public boolean containsDestination(Color color) {
         var destination = this.getRepOfType(DestinationRep.class);
         return destination != null && destination.getColor().equals(color);

@@ -3,7 +3,9 @@ package environment;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -423,6 +425,7 @@ public class Perception {
         return cellsWithPackets;
     }
 
+    //TODO Our implementation
     public List<CellPerception> getDestinationCells(Color color){
         List<CellPerception> cellsWithDestination = new ArrayList<>();
         for(CellPerception[] cellLine : cells){
@@ -434,6 +437,19 @@ public class Perception {
         }
         return cellsWithDestination;
     }
+
+    public Map<Color,CellPerception> getDestinationCells(){
+        Map<Color,CellPerception> cellsWithDestination = new HashMap<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.getDestination()!=null){
+                    cellsWithDestination.put(cell.getDestination().getColor(),cell);
+                }
+            }
+        }
+        return cellsWithDestination;
+    }
+
 
     public CellPerception getClosestCell(List<CellPerception> possibleCells, int x, int y){
         // TODO: Now we're using euclidian distance, but in the future we might need to account for walls and stuff.

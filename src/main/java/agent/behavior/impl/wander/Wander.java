@@ -41,11 +41,17 @@ public class Wander extends Behavior {
         }
 
         var perception = agentState.getPerception();
+        addDestinationsIfFound(perception,agentState);
         var optimizedMoves = new ArrayList<Coordinate>(avoidWorthlessMoves(moves, perception));
         //TODO first use prioritized move else move Randomly
 
         performMove(agentState, agentAction, optimizedMoves);
 
+    }
+
+    private void addDestinationsIfFound(Perception perception, AgentState agentState) {
+        var destinations=perception.getDestinationCells();
+        destinations.forEach((k, v) -> agentState.addMemoryFragment(k.toString(),new AgentMemoryFragment(new Coordinate(v.getX(),v.getY()))));
     }
 
     public List<Coordinate> avoidWorthlessMoves(List<Coordinate> moves, Perception perception) {

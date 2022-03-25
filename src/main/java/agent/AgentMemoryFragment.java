@@ -9,5 +9,6 @@ public class AgentMemoryFragment {
         this.coordinate = coordinate;
     }
 
+
     public Coordinate getCoordinate() { return this.coordinate; }
 }
