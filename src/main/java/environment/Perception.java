@@ -470,5 +470,9 @@ public class Perception {
         return minMove;
     }
 
+    public CellPerception[][] getAllVision(){
+        return cells;
+    }
+
 }
 
