@@ -172,6 +172,10 @@ public class Perception {
         return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
     }
 
+    public static int euclideanDistance(int x1, int y1, int x2, int y2) {
+        return (int) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+
     /**
      *  Returns the Manhattan distance between 2 coordinates
      *
@@ -432,11 +436,11 @@ public class Perception {
     }
 
     public CellPerception getClosestCell(List<CellPerception> possibleCells, int x, int y){
-        // TODO: Now we're using manhattan distance, but in the future we might need to account for walls and stuff.
+        // TODO: Now we're using euclidian distance, but in the future we might need to account for walls and stuff.
         CellPerception minCell = possibleCells.get(0);
-        int minDistance = manhattanDistance(minCell.getX(), minCell.getY(), x, y);
+        int minDistance = euclideanDistance(minCell.getX(), minCell.getY(), x, y);
         for(int i = 1; i < possibleCells.size(); i++) {
-            int distance = manhattanDistance(possibleCells.get(i).getX(), possibleCells.get(i).getY(), x, y);
+            int distance = euclideanDistance(possibleCells.get(i).getX(), possibleCells.get(i).getY(), x, y);
             if(distance < minDistance){
                 minDistance = distance;
                 minCell = possibleCells.get(i);
@@ -449,14 +453,14 @@ public class Perception {
         Coordinate minMove = moves.get(0);
         int minDistance = -1;
 
-        for (int i = 1; i < moves.size(); i++) {
+        for (int i = 0; i < moves.size(); i++) {
             Coordinate move = moves.get(i);
             int x = move.getX();
             int y = move.getY();
-            int distanceAfterMove = manhattanDistance(agentX + x, agentY + y, cell.getX(), cell.getY());
+            int distanceAfterMove = euclideanDistance(agentX + x, agentY + y, cell.getX(), cell.getY());
             if (getCellPerceptionOnRelPos(x, y) != null && getCellPerceptionOnRelPos(x, y).isWalkable())
             {
-                if(minDistance== -1 || distanceAfterMove<minDistance){
+                if(minDistance == -1 || distanceAfterMove < minDistance){
                     minMove = move;
                     minDistance = distanceAfterMove;
                 }

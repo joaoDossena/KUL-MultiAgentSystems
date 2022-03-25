@@ -50,7 +50,6 @@ public class HasPacketBehavior extends Wander {
 
         Coordinate minMove = perception.getShortestMoveToCell(minCell, moves, agentState.getX(), agentState.getY());
 
-
         agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());
     }
 }
