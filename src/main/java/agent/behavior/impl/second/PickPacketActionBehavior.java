@@ -16,10 +16,4 @@ public class PickPacketActionBehavior extends ActionBehavior {
     protected Predicate<CellPerception> getContainsTargetPredicate(AgentState agentState) {
         return CellPerception::containsPacket;
     }
-
-    @Override
-    public void act(AgentState agentState, AgentAction agentAction) {
-
-        super.act(agentState, agentAction);
-    }
 }

@@ -4,7 +4,6 @@ import agent.behavior.BehaviorChange;
 
 public class PutPacketBehaviorChange extends BehaviorChange {
 
-
     @Override
     public void updateChange() {
 

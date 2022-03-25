@@ -2,6 +2,7 @@ package agent.behavior.impl.second;
 
 import agent.AgentAction;
 import agent.AgentCommunication;
+import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
 import environment.CellPerception;
@@ -16,7 +17,7 @@ public abstract class VisibleBehavior<T extends Item<?>> extends Behavior {
 
     @Override
     public void communicate(AgentState agentState, AgentCommunication agentCommunication) {
-
+        // No communication
     }
 
     @Override
@@ -35,6 +36,7 @@ public abstract class VisibleBehavior<T extends Item<?>> extends Behavior {
 
         Coordinate minMove = perception.getShortestMoveToCell(minCell, moves, agentState.getX(), agentState.getY());
 
+        agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(minMove.getX(), minMove.getY())));
         agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());
     }
 }

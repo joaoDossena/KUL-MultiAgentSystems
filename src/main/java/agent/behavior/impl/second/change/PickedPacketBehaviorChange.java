@@ -6,6 +6,7 @@ public class PickedPacketBehaviorChange extends BehaviorChange {
 
     @Override
     public void updateChange() {
+
     }
 
     @Override

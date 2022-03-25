@@ -16,10 +16,4 @@ public class PutPacketActionBehavior extends ActionBehavior {
     protected Predicate<CellPerception> getContainsTargetPredicate(AgentState agentState) {
         return cellPerception -> cellPerception.containsDestination(agentState.getCarry().get().getColor());
     }
-
-    @Override
-    public void act(AgentState agentState, AgentAction agentAction) {
-
-        super.act(agentState, agentAction);
-    }
 }
