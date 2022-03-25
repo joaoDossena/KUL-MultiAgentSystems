@@ -10,6 +10,7 @@ import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
 import environment.Coordinate;
+import environment.Perception;
 
 public class Wander extends Behavior {
 
@@ -17,14 +18,13 @@ public class Wander extends Behavior {
     public void communicate(AgentState agentState, AgentCommunication agentCommunication) {
         // No communication
     }
-
-    
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
         AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
         Coordinate undoPreviousMove = null, previousMove;
         List<Coordinate> possibleCurrentMoves = generateAllMovesFromCoordinate(new Coordinate(0, 0));
         List<Coordinate> accessibleFromPreviousAndCurrent = null;
+
         if (fragment != null){
             previousMove = fragment.getCoordinate();
             undoPreviousMove = previousMove.invertedSign();
@@ -34,14 +34,47 @@ public class Wander extends Behavior {
 
         // Potential moves an agent can make (radius of 1 around the agent)
         List<Coordinate> moves = possibleCurrentMoves;
-        if(accessibleFromPreviousAndCurrent != null)
-            moves = removeIntersection(possibleCurrentMoves, accessibleFromPreviousAndCurrent);
-
-        // Shuffle moves randomly
-        Collections.shuffle(moves);
-
-        if(undoPreviousMove != null)
+        if(accessibleFromPreviousAndCurrent != null) {
+            moves = removeIntersection(possibleCurrentMoves, accessibleFromPreviousAndCurrent); // priority #1
+            Collections.shuffle(moves);
             moves.addAll(accessibleFromPreviousAndCurrent);
+        }
+
+        var perception = agentState.getPerception();
+        var optimizedMoves = new ArrayList<Coordinate>(avoidWorthlessMoves(moves,perception));
+        //TODO first use prioritized move else move Randomly
+
+        performMove(agentState, agentAction, optimizedMoves);
+
+    }
+
+    public List<Coordinate> avoidWorthlessMoves(List<Coordinate> moves, Perception perception){
+        var optimizedMoves=new ArrayList<Coordinate>(moves);
+        var vision= perception.getAllVision();
+
+        if(perception.getSelfX()==1||perception.getSelfX()==2){
+            optimizedMoves.remove(new Coordinate(-1,0));
+            optimizedMoves.add(new Coordinate(-1,0));
+        }
+        else if(perception.getSelfX()==vision.length-2||perception.getSelfX()==vision.length-3){
+            optimizedMoves.remove(new Coordinate(1,0));
+            optimizedMoves.add(new Coordinate(1,0));
+        }
+
+        if(perception.getSelfX()==1||perception.getSelfX()==2){
+            optimizedMoves.remove(new Coordinate(-1,0));
+            optimizedMoves.add(new Coordinate(-1,0));
+
+        }
+        else if(perception.getSelfX()==vision.length-2||perception.getSelfX()==vision.length-3){
+            optimizedMoves.remove(new Coordinate(1,0));
+            optimizedMoves.add(new Coordinate(1,0));
+        }
+
+        return optimizedMoves;
+    }
+
+    public void performMove(AgentState agentState, AgentAction agentAction, List<Coordinate> moves) {
 
         // Check for viable moves
         for (var move : moves) {
@@ -57,8 +90,6 @@ public class Wander extends Behavior {
                 return;
             }
         }
-
-        // No viable moves, skip turn
         agentAction.skip();
     }
 
