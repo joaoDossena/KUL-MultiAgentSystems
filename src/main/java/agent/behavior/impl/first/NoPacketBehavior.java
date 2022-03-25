@@ -1,9 +1,9 @@
-package agent.behavior.graph;
+package agent.behavior.impl.first;
 
 import agent.AgentAction;
 import agent.AgentMemoryFragment;
 import agent.AgentState;
-import agent.behavior.wander.Wander;
+import agent.behavior.impl.wander.Wander;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;

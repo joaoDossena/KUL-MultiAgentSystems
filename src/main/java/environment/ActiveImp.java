@@ -13,7 +13,7 @@ import util.Mutex;
  * This class provides the basics of threading methods for active objects and
  * agents in the Environment.
  */
-abstract public class ActiveImp implements Serializable, Runnable {
+public abstract class ActiveImp implements Serializable, Runnable {
 
 
     private boolean suspendRequested, firstCycle;
@@ -33,7 +33,7 @@ abstract public class ActiveImp implements Serializable, Runnable {
     private final Logger logger = Logger.getLogger(ActiveImp.class.getName());
 
 
-    public ActiveImp(ActiveItemID id) {
+    protected ActiveImp(ActiveItemID id) {
         this.ID = id;
         this.running = false;
         this.initialRun = true;
@@ -47,7 +47,7 @@ abstract public class ActiveImp implements Serializable, Runnable {
 
     //INTERFACE TO SYNCHRONIZER
 
-    abstract protected void cleanup();
+    protected abstract void cleanup();
 
     /**
      * Starts this AgentImps execution
@@ -160,7 +160,7 @@ abstract public class ActiveImp implements Serializable, Runnable {
     /**
      * Implements the execution of a synchronization phase.
      */
-    abstract protected void execCurrentPhase();
+    protected abstract void execCurrentPhase();
 
     protected void setNextPhase() {
         if (perceiving) {
@@ -186,7 +186,7 @@ abstract public class ActiveImp implements Serializable, Runnable {
         requestResume();
     }
 
-    abstract protected boolean environmentPermissionNeededForNextPhase();
+    protected abstract boolean environmentPermissionNeededForNextPhase();
 
     /**
      * Recompute the syncSet for this agentImp's next action-cycle.
@@ -217,7 +217,7 @@ abstract public class ActiveImp implements Serializable, Runnable {
         getLock().releaseLock();
     }
 
-    abstract protected void action();
+    protected abstract void action();
 
 
     /**

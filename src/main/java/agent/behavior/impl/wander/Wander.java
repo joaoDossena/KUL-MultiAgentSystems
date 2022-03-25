@@ -1,4 +1,4 @@
-package agent.behavior.wander;
+package agent.behavior.impl.wander;
 
 import java.util.ArrayList;
 import java.util.Collections;

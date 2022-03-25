@@ -3,23 +3,23 @@ description "Graph based behavior. Implementation of different behaviors."
 
 nbStates 2
 
-1 agent.behavior.graph.NoPacketBehavior
+1 agent.behavior.impl.first.NoPacketBehavior
 nbArgs 0
 
-2 agent.behavior.graph.HasPacketBehavior
+2 agent.behavior.impl.first.HasPacketBehavior
 nbArgs 0
 
 
 nbChanges 2
 
 # First change, from behavior with ID 1 to behavior with ID 2
-agent.behavior.graph.change.PickedPacketBehaviorChange
+agent.behavior.impl.first.change.PickedPacketBehaviorChange
 nbArgs 0      # The constructor of PickedPacketBehaviorChange takes 0 args
 priority 0    # Higher value −> higher priority (in case of multiple satisfied change conditions from current behavior state)
 source 1      # ID of starting behavior
 target 2      # ID of resulting behavior
 
-agent.behavior.graph.change.PutPacketBehaviorChange
+agent.behavior.impl.first.change.PutPacketBehaviorChange
 nbArgs 0
 priority 0
 source 2

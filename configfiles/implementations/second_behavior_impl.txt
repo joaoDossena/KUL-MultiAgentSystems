@@ -1,0 +1,61 @@
+description "Implementation for three different abstract behaviors. Action, Visible, Search"
+
+
+nbStates 6
+
+1 agent.behavior.impl.second.PacketSearchBehavior
+nbArgs 0
+
+2 agent.behavior.impl.second.DestinationSearchBehavior
+nbArgs 0
+
+3 agent.behavior.impl.second.PacketVisibleBehavior
+nbArgs 0
+
+4 agent.behavior.impl.second.DestinationVisibleBehavior
+nbArgs 0
+
+5 agent.behavior.impl.second.PickPacketActionBehavior
+nbArgs 0
+
+6 agent.behavior.impl.second.PutPacketActionBehavior
+nbArgs 0
+
+nbChanges 6
+
+agent.behavior.impl.second.change.DetectedDestinationBehaviorChange
+nbArgs 0
+priority 0
+source 2
+target 4
+
+agent.behavior.impl.second.change.DetectedPacketBehaviorChange
+nbArgs 0
+priority 0
+source 1
+target 3
+
+agent.behavior.impl.second.change.ReachedPacketBehaviorChange
+nbArgs 0
+priority 0
+source 3
+target 5
+
+agent.behavior.impl.second.change.ReachedDestinationBehaviorChange
+nbArgs 0
+priority 0
+source 4
+target 6
+
+agent.behavior.impl.second.change.PickedPacketBehaviorChange
+nbArgs 0
+priority 0
+source 5
+target 2
+
+agent.behavior.impl.second.change.PutPacketBehaviorChange
+nbArgs 0
+priority 0
+source 6
+target 1
+
