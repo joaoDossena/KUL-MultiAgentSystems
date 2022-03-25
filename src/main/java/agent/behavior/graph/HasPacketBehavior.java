@@ -1,6 +1,7 @@
 package agent.behavior.graph;
 
 import agent.AgentAction;
+import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.wander.Wander;
 import environment.CellPerception;
@@ -50,6 +51,7 @@ public class HasPacketBehavior extends Wander {
 
         Coordinate minMove = perception.getShortestMoveToCell(minCell, moves, agentState.getX(), agentState.getY());
 
+        agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(minMove.getX(), minMove.getY())));
         agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());
     }
 }

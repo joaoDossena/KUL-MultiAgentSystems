@@ -56,6 +56,17 @@ public class Coordinate extends Pair<Integer, Integer> {
         return new Coordinate(newFst, newSnd);
     }
 
+    public Coordinate invertedSign() {
+        int newFst = 0, newSnd = 0;
+
+        if (first != 0)
+            newFst = first < 0 ? 1 : -1;
+        if (second != 0)
+            newSnd = second < 0 ? 1 : -1;
+
+        return new Coordinate(newFst, newSnd);
+    }
+
 
     @Override
     public boolean equals(Object other) {
