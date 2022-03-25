@@ -22,23 +22,26 @@ public class Wander extends Behavior {
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
         AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
-        Coordinate undoMove = null;
-        if (fragment != null)  undoMove = fragment.getCoordinate().invertedSign();
-
+        Coordinate undoPreviousMove = null, previousMove;
+        List<Coordinate> possibleCurrentMoves = generateAllMovesFromCoordinate(new Coordinate(0, 0));
+        List<Coordinate> accessibleFromPreviousAndCurrent = null;
+        if (fragment != null){
+            previousMove = fragment.getCoordinate();
+            undoPreviousMove = previousMove.invertedSign();
+            accessibleFromPreviousAndCurrent = commonElements(possibleCurrentMoves, generateAllMovesFromCoordinate(undoPreviousMove));
+            accessibleFromPreviousAndCurrent.add(undoPreviousMove);
+        }
 
         // Potential moves an agent can make (radius of 1 around the agent)
-        List<Coordinate> moves = addAllExceptForbidden(new ArrayList<>(List.of(
-                new Coordinate(1, 1), new Coordinate(-1, -1),
-                new Coordinate(1, 0), new Coordinate(-1, 0),
-                new Coordinate(0, 1), new Coordinate(0, -1),
-                new Coordinate(1, -1), new Coordinate(-1, 1)
-        )), undoMove);
-
+        List<Coordinate> moves = possibleCurrentMoves;
+        if(accessibleFromPreviousAndCurrent != null)
+            moves = removeIntersection(possibleCurrentMoves, accessibleFromPreviousAndCurrent);
 
         // Shuffle moves randomly
         Collections.shuffle(moves);
-        if(undoMove != null)
-            moves.add(undoMove);
+
+        if(undoPreviousMove != null)
+            moves.addAll(accessibleFromPreviousAndCurrent);
 
         // Check for viable moves
         for (var move : moves) {
@@ -59,11 +62,33 @@ public class Wander extends Behavior {
         agentAction.skip();
     }
 
-    public List<Coordinate> addAllExceptForbidden(List<Coordinate> moves, Coordinate forbidden){
+    public List<Coordinate> removeIntersection(List<Coordinate> moves, List<Coordinate> forbiddenMoves){
         List<Coordinate> res = new ArrayList<>();
         for(Coordinate move : moves){
-            if(!move.equals(forbidden)) res.add(move);
+            if(!forbiddenMoves.contains(move)) res.add(move);
         }
         return res;
     }
+
+    public List<Coordinate> generateAllMovesFromCoordinate(Coordinate coordinate){
+        List<Coordinate> res = new ArrayList<>();
+
+        for(int x = -1; x <= 1; x++){
+            for(int y = -1; y <= 1; y++){
+                if(x == 0 && y == 0) continue;
+                res.add(new Coordinate(coordinate.getX() + x, coordinate.getY() + y));
+            }
+        }
+        return res;
+    }
+
+    public List<Coordinate> commonElements(List<Coordinate> l1, List<Coordinate> l2){
+        List<Coordinate> res = new ArrayList<>();
+        for(Coordinate c1 : l1){
+            if(l2.contains(c1)) res.add(c1);
+        }
+        return res;
+    }
+
+
 }
