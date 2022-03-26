@@ -2,10 +2,8 @@ package environment;
 
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -450,8 +448,50 @@ public class Perception {
         return cellsWithDestination;
     }
 
+    public List<Coordinate> shortWithManhattanDistance(List<Coordinate> possibleCells, int x, int y){
+        // TODO: Now we're using manhattanDistance distance, but in the future we might need to account for walls and stuff.
+
+        HashMap<Coordinate,Integer> possibleWithDistanceMap= new HashMap<>();
+        for(int i = 0; i < possibleCells.size(); i++) {
+            int distance = manhattanDistance(possibleCells.get(i).getX(), possibleCells.get(i).getY(), x, y);
+            possibleWithDistanceMap.put(possibleCells.get(i),distance);
+        }
+        Map<Coordinate, Integer> sortedHM = sortByValue(possibleWithDistanceMap);
+        List<Coordinate> sortedDestinations = new ArrayList<>();
+        for (Map.Entry<Coordinate, Integer>  item: sortedHM.entrySet()) {
+            sortedDestinations.add(item.getKey());
+            System.out.println("X: "+item.getKey().getX()+" Y: "+item.getKey().getY()+" distance: "+item.getValue());
+        }
+        return sortedDestinations;
+    }
+
+    //TODO Add to a UTIL
+    // function to sort hashmap by values
+    public static HashMap<Coordinate, Integer> sortByValue(HashMap<Coordinate, Integer> hm)
+    {
+        // Create a list from elements of HashMap
+        List<Map.Entry<Coordinate, Integer> > list =
+                new LinkedList<Map.Entry<Coordinate, Integer> >(hm.entrySet());
+
+        // Sort the list
+        Collections.sort(list, new Comparator<Map.Entry<Coordinate, Integer> >() {
+            public int compare(Map.Entry<Coordinate, Integer> o1,
+                               Map.Entry<Coordinate, Integer> o2)
+            {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // put data from sorted list to hashmap
+        HashMap<Coordinate, Integer> temp = new LinkedHashMap<Coordinate, Integer>();
+        for (Map.Entry<Coordinate, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
 
     public CellPerception getClosestCell(List<CellPerception> possibleCells, int x, int y){
+        if(possibleCells.isEmpty())return null;
         // TODO: Now we're using euclidian distance, but in the future we might need to account for walls and stuff.
         CellPerception minCell = possibleCells.get(0);
         int minDistance = euclideanDistance(minCell.getX(), minCell.getY(), x, y);

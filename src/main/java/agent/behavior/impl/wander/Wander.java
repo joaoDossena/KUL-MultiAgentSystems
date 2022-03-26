@@ -46,10 +46,9 @@ public class Wander extends Behavior {
         //TODO first use prioritized move else move Randomly
 
         performMove(agentState, agentAction, optimizedMoves);
-
     }
 
-    private void addDestinationsIfFound(Perception perception, AgentState agentState) {
+    protected void addDestinationsIfFound(Perception perception, AgentState agentState) {
         var destinations=perception.getDestinationCells();
         destinations.forEach((k, v) -> agentState.addMemoryFragment(k.toString(),new AgentMemoryFragment(new Coordinate(v.getX(),v.getY()))));
     }
@@ -87,12 +86,14 @@ public class Wander extends Behavior {
 
             // If the area is null, it is outside the bounds of the environment
             //  (when the agent is at any edge for example some moves are not possible)
-            if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()) {
+            if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable() && !perception.getCellPerceptionOnRelPos(x, y).containsAgent()) {
                 agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(x, y)));
+                System.out.println("Step Agent ID:"+ agentState.getName());
                 agentAction.step(agentState.getX() + x, agentState.getY() + y);
                 return;
             }
         }
+        System.out.println("Skip Agent ID:"+ agentState.getName());
         agentAction.skip();
     }
 
