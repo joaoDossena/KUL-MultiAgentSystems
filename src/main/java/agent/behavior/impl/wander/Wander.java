@@ -26,7 +26,7 @@ public class Wander extends Behavior {
         List<Coordinate> accessibleFromPreviousAndCurrent = null;
 
         if (fragment != null) {
-            previousMove = fragment.getCoordinate();
+            previousMove = fragment.getCoordinates().get(0);
             undoPreviousMove = previousMove.invertedSign();
             accessibleFromPreviousAndCurrent = commonElements(possibleCurrentMoves, generateAllMovesFromCoordinate(undoPreviousMove));
             accessibleFromPreviousAndCurrent.add(undoPreviousMove);

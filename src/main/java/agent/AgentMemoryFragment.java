@@ -2,13 +2,19 @@ package agent;
 
 import environment.Coordinate;
 
+import java.util.ArrayList;
+
 public class AgentMemoryFragment {
-    private Coordinate coordinate = null;
+    private ArrayList<Coordinate> coordinates = null;
 
     public AgentMemoryFragment(Coordinate coordinate){
-        this.coordinate = coordinate;
+        coordinates=new ArrayList<>();
+        addToCoordinatesList(coordinate);
     }
 
+    public void addToCoordinatesList (Coordinate coordinate){
+        if(!coordinates.contains(coordinate)) coordinates.add(coordinate);
+    }
 
-    public Coordinate getCoordinate() { return this.coordinate; }
+    public ArrayList<Coordinate> getCoordinates() { return this.coordinates; }
 }

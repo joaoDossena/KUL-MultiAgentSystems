@@ -15,8 +15,9 @@ public class HasPacketBehavior extends Wander {
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
-
         Perception perception = agentState.getPerception();
+        checkForEnergyStations(agentState,perception);
+        checkEnergyLevel(agentState);
         var neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){
@@ -27,6 +28,10 @@ public class HasPacketBehavior extends Wander {
 
         }
         walkTowardsClosestDestination(agentState, agentAction);
+    }
+
+    private void checkEnergyLevel(AgentState agentState) {
+        if(agentState.getBatteryState()!=30) System.out.println("LOW Battery:"+ agentState.getBatteryState());
     }
 
     private List<Coordinate> returnListToRelative(List<Coordinate> destinationSortedCoordinates, int x, int y) {
@@ -54,6 +59,20 @@ public class HasPacketBehavior extends Wander {
         return currPerception.shortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
     }
 
+    private void checkForEnergyStations(AgentState agentState, Perception perception){
+        List<CellPerception> chargers = perception.getEnergyStations();
+        for(CellPerception station : chargers) {
+            var stations = agentState.getMemoryFragment("EnergyStations");
+            if (stations == null) {
+                agentState.addMemoryFragment("EnergyStations", new AgentMemoryFragment(new Coordinate(station.getX(), station.getY())));
+            }
+            else{
+                stations.addToCoordinatesList(station.toCoordinate());
+                agentState.addMemoryFragment("EnergyStations",stations);
+            }
+        }
+    }
+
     private void walkTowardsClosestDestination(AgentState agentState, AgentAction agentAction) {
         Perception perception = agentState.getPerception();
         List<CellPerception> destinations = perception.getDestinationCells(agentState.getCarry().get().getColor());
@@ -65,12 +84,12 @@ public class HasPacketBehavior extends Wander {
                 AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
                 Coordinate undoPreviousMove = null, previousMove;
                 List<Coordinate> possibleNewLocations = generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
-                List<Coordinate> destinationSortedCoordinates=prioritizeWithManhattan(possibleNewLocations,agentState.getPerception(),destinationCoordinates.getCoordinate());
+                List<Coordinate> destinationSortedCoordinates=prioritizeWithManhattan(possibleNewLocations,agentState.getPerception(),destinationCoordinates.getCoordinates().get(0));
                 List<Coordinate> relativeSortedCoordinates=returnListToRelative(destinationSortedCoordinates,agentState.getX(),agentState.getY());
                 List<Coordinate> accessibleFromPreviousAndCurrent = null;
 
                 if (fragment != null) {
-                    previousMove = fragment.getCoordinate();
+                    previousMove = fragment.getCoordinates().get(0);
                     undoPreviousMove = previousMove.invertedSign();
                     accessibleFromPreviousAndCurrent = commonElements(relativeSortedCoordinates, generateAllMovesFromCoordinate(undoPreviousMove));
                     accessibleFromPreviousAndCurrent.add(undoPreviousMove);

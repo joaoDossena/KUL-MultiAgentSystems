@@ -423,6 +423,18 @@ public class Perception {
         return cellsWithPackets;
     }
 
+    public List<CellPerception> getEnergyStations(){
+        List<CellPerception> energyStations = new ArrayList<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.containsEnergyStation()){
+                    energyStations.add(cell);
+                }
+            }
+        }
+        return energyStations;
+    }
+
     //TODO Our implementation
     public List<CellPerception> getDestinationCells(Color color){
         List<CellPerception> cellsWithDestination = new ArrayList<>();

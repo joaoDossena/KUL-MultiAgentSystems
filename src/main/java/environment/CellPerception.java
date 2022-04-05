@@ -24,7 +24,11 @@ import environment.world.wall.WallRep;
  */
 
 public class CellPerception {
-    
+
+    public Coordinate toCoordinate(){
+        return new Coordinate(getX(),getY());
+    }
+
     /**
      * The x and y coordinate (wrt. the environment) of this cell.
      */
