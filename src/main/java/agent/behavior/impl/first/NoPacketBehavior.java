@@ -1,12 +1,16 @@
 package agent.behavior.impl.first;
 
 import agent.AgentAction;
+import agent.AgentCommunication;
 import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.impl.wander.Wander;
 import environment.CellPerception;
 import environment.Coordinate;
+import environment.Mail;
 import environment.Perception;
+import environment.world.agent.AgentRep;
+import environment.world.energystation.EnergyStation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +19,9 @@ public class NoPacketBehavior extends Wander {
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
-
         Perception perception = agentState.getPerception();
+        checkForEnergyStations(agentState,perception);
+        checkEnergyLevel(agentState);
         var neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){

@@ -5,18 +5,57 @@ import agent.AgentCommunication;
 import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
+import environment.CellPerception;
 import environment.Coordinate;
+import environment.Mail;
 import environment.Perception;
+import environment.world.agent.AgentRep;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Wander extends Behavior {
 
+
     @Override
     public void communicate(AgentState agentState, AgentCommunication agentCommunication) {
-        // No communication
+        communicateStations(agentCommunication,agentState.getPerception(), agentState);
     }
+
+
+    private void communicateStations(AgentCommunication agentCommunication,Perception perception, AgentState agentState) {
+        var msgs=agentCommunication.getMessages();
+        System.out.println(msgs.size());
+        if(msgs!=null){
+            //System.out.println("Destinations will  be added to memory");
+            var energyStations=agentState.getMemoryFragment("EnergyStations");
+
+                for(int i=0;i< msgs.size();i++) {
+                    if (msgs.get(i).getCoordinates() != null) {
+                        if (energyStations != null) {
+                            for (Coordinate cor : msgs.get(i).getCoordinates()) {
+                                energyStations.addToCoordinatesList(cor);
+                            }
+                        } else {
+                            agentState.addMemoryFragment("EnergyStations", new AgentMemoryFragment(msgs.get(i).getCoordinates()));
+                            continue;
+                        }
+
+                        agentCommunication.removeMessage(i);
+                        agentState.addMemoryFragment("EnergyStations", energyStations);
+                    }
+                }
+            }
+        var energyStates=agentState.getMemoryFragment("EnergyStations");
+        if(energyStates!=null) {
+            ArrayList<AgentRep> visibleAgents = perception.getVisibleAgents();
+            for(AgentRep agentRep:visibleAgents){
+                agentCommunication.sendMessage(agentRep,energyStates.getCoordinates());
+            }
+        }
+    }
+
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
@@ -47,6 +86,25 @@ public class Wander extends Behavior {
 
         performMove(agentState, agentAction, optimizedMoves);
     }
+
+    protected void checkEnergyLevel(AgentState agentState) {
+        if(agentState.getBatteryState()!=30) System.out.print("");
+    }
+
+    protected void checkForEnergyStations(AgentState agentState, Perception perception){
+        List<CellPerception> chargers = perception.getEnergyStations();
+        for(CellPerception station : chargers) {
+            var stations = agentState.getMemoryFragment("EnergyStations");
+            if (stations == null) {
+                agentState.addMemoryFragment("EnergyStations", new AgentMemoryFragment(new Coordinate(station.getX(), station.getY())));
+            }
+            else{
+                stations.addToCoordinatesList(station.toCoordinate());
+                agentState.addMemoryFragment("EnergyStations",stations);
+            }
+        }
+    }
+
 
     protected void addDestinationsIfFound(Perception perception, AgentState agentState) {
         var destinations=perception.getDestinationCells();
@@ -88,12 +146,17 @@ public class Wander extends Behavior {
             //  (when the agent is at any edge for example some moves are not possible)
             if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable() && !perception.getCellPerceptionOnRelPos(x, y).containsAgent()) {
                 agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(x, y)));
-                System.out.println("Step Agent ID:"+ agentState.getName());
+               // System.out.println("Step Agent ID:"+ agentState.getName());
                 agentAction.step(agentState.getX() + x, agentState.getY() + y);
+                var cor=agentState.getMemoryFragment("EnergyStations");
+                if(cor==null)
+                    System.out.println(agentState.getName() + " No energy Stations known");
+                else
+                    System.out.println(agentState.getName()+ " stations: "+cor.getCoordinates().size());
                 return;
             }
         }
-        System.out.println("Skip Agent ID:"+ agentState.getName());
+        //System.out.println("Skip Agent ID:"+ agentState.getName());
         agentAction.skip();
     }
 

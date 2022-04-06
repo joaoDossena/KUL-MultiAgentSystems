@@ -12,6 +12,10 @@ public class AgentMemoryFragment {
         addToCoordinatesList(coordinate);
     }
 
+    public AgentMemoryFragment(ArrayList<Coordinate> coordinates){
+        this.coordinates=coordinates;
+    }
+
     public void addToCoordinatesList (Coordinate coordinate){
         if(!coordinates.contains(coordinate)) coordinates.add(coordinate);
     }

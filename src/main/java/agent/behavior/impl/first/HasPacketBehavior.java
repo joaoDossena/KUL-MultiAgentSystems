@@ -30,10 +30,6 @@ public class HasPacketBehavior extends Wander {
         walkTowardsClosestDestination(agentState, agentAction);
     }
 
-    private void checkEnergyLevel(AgentState agentState) {
-        if(agentState.getBatteryState()!=30) System.out.println("LOW Battery:"+ agentState.getBatteryState());
-    }
-
     private List<Coordinate> returnListToRelative(List<Coordinate> destinationSortedCoordinates, int x, int y) {
         List<Coordinate> relativeCoordinates=new ArrayList<>();
         for(Coordinate cor : destinationSortedCoordinates){
@@ -57,20 +53,6 @@ public class HasPacketBehavior extends Wander {
 
     private List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
         return currPerception.shortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
-    }
-
-    private void checkForEnergyStations(AgentState agentState, Perception perception){
-        List<CellPerception> chargers = perception.getEnergyStations();
-        for(CellPerception station : chargers) {
-            var stations = agentState.getMemoryFragment("EnergyStations");
-            if (stations == null) {
-                agentState.addMemoryFragment("EnergyStations", new AgentMemoryFragment(new Coordinate(station.getX(), station.getY())));
-            }
-            else{
-                stations.addToCoordinatesList(station.toCoordinate());
-                agentState.addMemoryFragment("EnergyStations",stations);
-            }
-        }
     }
 
     private void walkTowardsClosestDestination(AgentState agentState, AgentAction agentAction) {

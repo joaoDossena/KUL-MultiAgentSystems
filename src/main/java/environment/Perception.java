@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import environment.world.agent.AgentRep;
 import gui.video.ItemDrawer.LinePoints;
 
 /**
@@ -542,5 +543,16 @@ public class Perception {
         return cells;
     }
 
+    public ArrayList<AgentRep> getVisibleAgents() {
+        ArrayList<AgentRep> agentReps = new ArrayList<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.containsAgent()){
+                    agentReps.add(cell.getAgentRepresentation().get());
+                }
+            }
+        }
+        return agentReps;
+    }
 }
 

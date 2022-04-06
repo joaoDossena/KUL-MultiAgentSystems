@@ -1,8 +1,30 @@
 package environment;
 
+import org.checkerframework.checker.units.qual.C;
 
+import java.util.ArrayList;
 
-public record Mail(String from, String to, String message) {
+public class Mail {
+
+    public Mail(String from, String to, String message){
+        this.from=from;
+        this.to=to;
+        this.message=message;
+    }
+
+    public Mail(String from, String to, ArrayList<Coordinate> coordinates){
+        this.from=from;
+        this.to=to;
+        this.coordinates=coordinates;
+    }
+
+    private ArrayList<Coordinate> coordinates;
+
+    private String from;
+
+    private String message;
+
+    private String to;
 
     public String getFrom() {
         return from;
@@ -16,8 +38,6 @@ public record Mail(String from, String to, String message) {
         return message;
     }
 
-    public String toString() {
-        return String.format("[Mail - FROM: %s, TO: %s, MESSAGE: %s]", this.from, this.to, this.message);
-    }
+    public ArrayList<Coordinate> getCoordinates(){ return coordinates;}
 
 }
