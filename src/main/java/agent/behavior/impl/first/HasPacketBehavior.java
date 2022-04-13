@@ -12,12 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HasPacketBehavior extends Wander {
+    private final String ENERGY_STATIONS = "EnergyStations";
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
         Perception perception = agentState.getPerception();
+        if(goToStation(agentAction,perception,agentState)) return;
         checkForEnergyStations(agentState,perception);
-        checkEnergyLevel(agentState);
         var neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){
@@ -30,30 +31,35 @@ public class HasPacketBehavior extends Wander {
         walkTowardsClosestDestination(agentState, agentAction);
     }
 
-    private List<Coordinate> returnListToRelative(List<Coordinate> destinationSortedCoordinates, int x, int y) {
-        List<Coordinate> relativeCoordinates=new ArrayList<>();
-        for(Coordinate cor : destinationSortedCoordinates){
-            relativeCoordinates.add(new Coordinate(cor.getX()-x,cor.getY()-y));
+    private boolean goToStation(AgentAction agentAction,Perception perception,AgentState agentState){
+        var currentEnergy=agentState.getBatteryState();
+        var memoryfragment=agentState.getMemoryFragment(ENERGY_STATIONS);
+        if(memoryfragment==null)return false;
+        var stations=memoryfragment.getCoordinates();
+        stations= (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
+        if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<105){
+            placePacketDown(agentAction,agentState);
+            return true;
         }
-        return relativeCoordinates;
+        return false;
     }
 
-    private List<Coordinate> generatePossibleAbsolutePositions(int x, int y) {
-        List<Coordinate> possiblePositions = new ArrayList<>();
-        possiblePositions.add(new Coordinate(x-1,y-1));
-        possiblePositions.add(new Coordinate(x,y-1));
-        possiblePositions.add(new Coordinate(x+1,y-1));
-        possiblePositions.add(new Coordinate(x,y+1));
-        possiblePositions.add(new Coordinate(x+1,y+1));
-        possiblePositions.add(new Coordinate(x-1,y+1));
-        possiblePositions.add(new Coordinate(x-1,y));
-        possiblePositions.add(new Coordinate(x+1,y));
-        return possiblePositions;
+    public boolean placePacketDown(AgentAction agentAction,AgentState agentState){
+        var perception=agentState.getPerception();
+        var coordinates= generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
+        coordinates=returnListToRelative(coordinates, agentState.getX(), agentState.getY());
+        var memoryFragment= agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
+        if(memoryFragment!=null)
+            coordinates=perception.shortWithManhattanDistance(coordinates,memoryFragment.getCoordinates().get(0).getX(),memoryFragment.getCoordinates().get(0).getY());
+        for(Coordinate c :coordinates){
+            if(perception.getCellPerceptionOnRelPos(c.getX(),c.getY())!=null && perception.getCellPerceptionOnRelPos(c.getX(),c.getY()).isWalkable()){
+                agentAction.putPacket(agentState.getX()+c.getX(),agentState.getY()+c.getY());
+                return true;
+            }
+        }
+        return false;
     }
 
-    private List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
-        return currPerception.shortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
-    }
 
     private void walkTowardsClosestDestination(AgentState agentState, AgentAction agentAction) {
         Perception perception = agentState.getPerception();

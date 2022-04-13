@@ -15,9 +15,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+
 public class Wander extends Behavior {
-
-
+    private final String ENERGY_STATIONS = "EnergyStations";
     @Override
     public void communicate(AgentState agentState, AgentCommunication agentCommunication) {
         communicateStations(agentCommunication,agentState.getPerception(), agentState);
@@ -29,8 +30,7 @@ public class Wander extends Behavior {
         System.out.println(msgs.size());
         if(msgs!=null){
             //System.out.println("Destinations will  be added to memory");
-            var energyStations=agentState.getMemoryFragment("EnergyStations");
-
+            var energyStations=agentState.getMemoryFragment(ENERGY_STATIONS);
                 for(int i=0;i< msgs.size();i++) {
                     if (msgs.get(i).getCoordinates() != null) {
                         if (energyStations != null) {
@@ -38,22 +38,46 @@ public class Wander extends Behavior {
                                 energyStations.addToCoordinatesList(cor);
                             }
                         } else {
-                            agentState.addMemoryFragment("EnergyStations", new AgentMemoryFragment(msgs.get(i).getCoordinates()));
+                            agentState.addMemoryFragment(ENERGY_STATIONS, new AgentMemoryFragment(msgs.get(i).getCoordinates()));
                             continue;
                         }
 
                         agentCommunication.removeMessage(i);
-                        agentState.addMemoryFragment("EnergyStations", energyStations);
+                        agentState.addMemoryFragment(ENERGY_STATIONS, energyStations);
                     }
                 }
             }
-        var energyStates=agentState.getMemoryFragment("EnergyStations");
+        var energyStates=agentState.getMemoryFragment(ENERGY_STATIONS);
         if(energyStates!=null) {
             ArrayList<AgentRep> visibleAgents = perception.getVisibleAgents();
             for(AgentRep agentRep:visibleAgents){
                 agentCommunication.sendMessage(agentRep,energyStates.getCoordinates());
             }
         }
+    }
+
+    protected List<Coordinate> generatePossibleAbsolutePositions(int x, int y) {
+        List<Coordinate> possiblePositions = new ArrayList<>();
+        possiblePositions.add(new Coordinate(x-1,y-1));
+        possiblePositions.add(new Coordinate(x,y-1));
+        possiblePositions.add(new Coordinate(x+1,y-1));
+        possiblePositions.add(new Coordinate(x,y+1));
+        possiblePositions.add(new Coordinate(x+1,y+1));
+        possiblePositions.add(new Coordinate(x-1,y+1));
+        possiblePositions.add(new Coordinate(x-1,y));
+        possiblePositions.add(new Coordinate(x+1,y));
+        return possiblePositions;
+    }
+
+    protected List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
+        return currPerception.shortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
+    }
+    protected List<Coordinate> returnListToRelative(List<Coordinate> destinationSortedCoordinates, int x, int y) {
+        List<Coordinate> relativeCoordinates=new ArrayList<>();
+        for(Coordinate cor : destinationSortedCoordinates){
+            relativeCoordinates.add(new Coordinate(cor.getX()-x,cor.getY()-y));
+        }
+        return relativeCoordinates;
     }
 
 
@@ -87,20 +111,18 @@ public class Wander extends Behavior {
         performMove(agentState, agentAction, optimizedMoves);
     }
 
-    protected void checkEnergyLevel(AgentState agentState) {
-        if(agentState.getBatteryState()!=30) System.out.print("");
-    }
+
 
     protected void checkForEnergyStations(AgentState agentState, Perception perception){
         List<CellPerception> chargers = perception.getEnergyStations();
         for(CellPerception station : chargers) {
-            var stations = agentState.getMemoryFragment("EnergyStations");
+            var stations = agentState.getMemoryFragment(ENERGY_STATIONS);
             if (stations == null) {
-                agentState.addMemoryFragment("EnergyStations", new AgentMemoryFragment(new Coordinate(station.getX(), station.getY())));
+                agentState.addMemoryFragment(ENERGY_STATIONS, new AgentMemoryFragment(new Coordinate(station.getX(), station.getY())));
             }
             else{
                 stations.addToCoordinatesList(station.toCoordinate());
-                agentState.addMemoryFragment("EnergyStations",stations);
+                agentState.addMemoryFragment(ENERGY_STATIONS,stations);
             }
         }
     }
@@ -148,7 +170,7 @@ public class Wander extends Behavior {
                 agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(x, y)));
                // System.out.println("Step Agent ID:"+ agentState.getName());
                 agentAction.step(agentState.getX() + x, agentState.getY() + y);
-                var cor=agentState.getMemoryFragment("EnergyStations");
+                var cor=agentState.getMemoryFragment(ENERGY_STATIONS);
                 if(cor==null)
                     System.out.println(agentState.getName() + " No energy Stations known");
                 else
@@ -191,5 +213,38 @@ public class Wander extends Behavior {
         return res;
     }
 
+    protected void walkTowardsCoordinate(AgentAction agentAction,AgentState agentState,Coordinate coordinate){
+        AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
+        Coordinate undoPreviousMove = null, previousMove;
+        List<Coordinate> possibleNewLocations = generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
+        List<Coordinate> destinationSortedCoordinates=prioritizeWithManhattan(possibleNewLocations,agentState.getPerception(),coordinate);
+        List<Coordinate> relativeSortedCoordinates=returnListToRelative(destinationSortedCoordinates,agentState.getX(),agentState.getY());
+        List<Coordinate> accessibleFromPreviousAndCurrent = null;
+
+        if (fragment != null) {
+            previousMove = fragment.getCoordinates().get(0);
+            undoPreviousMove = previousMove.invertedSign();
+            accessibleFromPreviousAndCurrent = commonElements(relativeSortedCoordinates, generateAllMovesFromCoordinate(undoPreviousMove));
+            accessibleFromPreviousAndCurrent.add(undoPreviousMove);
+        }
+
+        // Potential moves an agent can make (radius of 1 around the agent)
+        List<Coordinate> moves = relativeSortedCoordinates;
+        if (accessibleFromPreviousAndCurrent != null) {
+            moves = removeIntersection(relativeSortedCoordinates, accessibleFromPreviousAndCurrent); // priority #1
+            moves.addAll(accessibleFromPreviousAndCurrent);
+        }
+
+        var perception1 = agentState.getPerception();
+        addDestinationsIfFound(perception1, agentState);
+        var optimizedMoves = new ArrayList<>(avoidWorthlessMoves(moves, perception1));
+        //TODO first use prioritized move else move Randomly
+        performMove(agentState, agentAction, optimizedMoves);
+    }
+
+    protected int calculateDistanceWithEnergy(int energyOfMoves, AgentState agentState, Coordinate coordinate){
+        Perception perception=agentState.getPerception();
+        return energyOfMoves*perception.manhattanDistance(agentState.getX(), agentState.getY(),coordinate.getX(),coordinate.getY());
+    }
 
 }

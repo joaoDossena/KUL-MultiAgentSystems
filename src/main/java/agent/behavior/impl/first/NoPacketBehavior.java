@@ -16,12 +16,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NoPacketBehavior extends Wander {
+    private final String ENERGY_STATIONS = "EnergyStations";
+
+    private boolean goToStation(AgentAction agentAction,Perception perception,AgentState agentState){
+        var currentEnergy=agentState.getBatteryState();
+        var memoryfragment=agentState.getMemoryFragment(ENERGY_STATIONS);
+        if(memoryfragment==null)return false;
+        var stations=memoryfragment.getCoordinates();
+        Coordinate destination=null;
+        stations= (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
+        if(!agentState.hasCarry()) {
+            if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<100){
+                walkTowardsCoordinate(agentAction,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1));
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
+        if(goToStation(agentAction,agentState.getPerception(),agentState)) return;
         Perception perception = agentState.getPerception();
         checkForEnergyStations(agentState,perception);
-        checkEnergyLevel(agentState);
         var neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){
