@@ -18,7 +18,6 @@ public interface AgentState {
      */
     Perception getPerception();
 
-
     /**
      * Returns a CellPerception of the previous area this agent stood on.
      */

@@ -26,7 +26,7 @@ public class NoPacketBehavior extends Wander {
         Coordinate destination=null;
         stations= (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
         if(!agentState.hasCarry()) {
-            if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<100){
+            if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<400){
                 walkTowardsCoordinate(agentAction,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1));
                 return true;
             }

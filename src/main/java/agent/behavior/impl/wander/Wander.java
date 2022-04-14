@@ -214,19 +214,19 @@ public class Wander extends Behavior {
     }
 
     protected void walkTowardsCoordinate(AgentAction agentAction,AgentState agentState,Coordinate coordinate){
-        AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
-        Coordinate undoPreviousMove = null, previousMove;
+        //AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
+        //Coordinate undoPreviousMove = null, previousMove;
         List<Coordinate> possibleNewLocations = generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
         List<Coordinate> destinationSortedCoordinates=prioritizeWithManhattan(possibleNewLocations,agentState.getPerception(),coordinate);
         List<Coordinate> relativeSortedCoordinates=returnListToRelative(destinationSortedCoordinates,agentState.getX(),agentState.getY());
         List<Coordinate> accessibleFromPreviousAndCurrent = null;
 
-        if (fragment != null) {
-            previousMove = fragment.getCoordinates().get(0);
-            undoPreviousMove = previousMove.invertedSign();
-            accessibleFromPreviousAndCurrent = commonElements(relativeSortedCoordinates, generateAllMovesFromCoordinate(undoPreviousMove));
-            accessibleFromPreviousAndCurrent.add(undoPreviousMove);
-        }
+        //if (fragment != null) {
+        //    previousMove = fragment.getCoordinates().get(0);
+        //    undoPreviousMove = previousMove.invertedSign();
+        //    accessibleFromPreviousAndCurrent = commonElements(relativeSortedCoordinates, generateAllMovesFromCoordinate(undoPreviousMove));
+        //    accessibleFromPreviousAndCurrent.add(undoPreviousMove);
+        //}
 
         // Potential moves an agent can make (radius of 1 around the agent)
         List<Coordinate> moves = relativeSortedCoordinates;

@@ -37,7 +37,7 @@ public class HasPacketBehavior extends Wander {
         if(memoryfragment==null)return false;
         var stations=memoryfragment.getCoordinates();
         stations= (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
-        if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<105){
+        if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<405){
             placePacketDown(agentAction,agentState);
             return true;
         }
