@@ -7,6 +7,7 @@ import agent.behavior.impl.wander.Wander;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
+import environment.world.agent.Agent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,9 @@ public class HasPacketBehavior extends Wander {
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
         Perception perception = agentState.getPerception();
-        if(goToStation(agentAction,perception,agentState)) return;
-        checkForEnergyStations(agentState,perception);
-        var neighbours = perception.getNeighbours();
+        if(goToStation(agentAction, perception, agentState)) return;
+        checkForEnergyStations(agentState, perception);
+        CellPerception[] neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){
             if(neighbor != null && neighbor.containsDestination(agentState.getCarry().get().getColor())){
@@ -32,28 +33,30 @@ public class HasPacketBehavior extends Wander {
     }
 
     private boolean goToStation(AgentAction agentAction,Perception perception,AgentState agentState){
-        var currentEnergy=agentState.getBatteryState();
-        var memoryfragment=agentState.getMemoryFragment(ENERGY_STATIONS);
-        if(memoryfragment==null)return false;
-        var stations=memoryfragment.getCoordinates();
-        stations= (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
-        if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<405){
-            placePacketDown(agentAction,agentState);
+        int currentEnergy = agentState.getBatteryState();
+        AgentMemoryFragment memoryfragment = agentState.getMemoryFragment(ENERGY_STATIONS);
+        if(memoryfragment == null) return false;
+
+        ArrayList<Coordinate> stations = memoryfragment.getCoordinates();
+        stations = (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
+        if((currentEnergy-calculateDistanceWithEnergy(10, agentState, new Coordinate(stations.get(0).getX(), stations.get(0).getY()-1))) < 405){
+            placePacketDown(agentAction, agentState);
             return true;
         }
         return false;
     }
 
     public boolean placePacketDown(AgentAction agentAction,AgentState agentState){
-        var perception=agentState.getPerception();
-        var coordinates= generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
-        coordinates=returnListToRelative(coordinates, agentState.getX(), agentState.getY());
-        var memoryFragment= agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
-        if(memoryFragment!=null)
-            coordinates=perception.shortWithManhattanDistance(coordinates,memoryFragment.getCoordinates().get(0).getX(),memoryFragment.getCoordinates().get(0).getY());
-        for(Coordinate c :coordinates){
-            if(perception.getCellPerceptionOnRelPos(c.getX(),c.getY())!=null && perception.getCellPerceptionOnRelPos(c.getX(),c.getY()).isWalkable()){
-                agentAction.putPacket(agentState.getX()+c.getX(),agentState.getY()+c.getY());
+        Perception perception = agentState.getPerception();
+        List<Coordinate> coordinates = generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
+        coordinates = returnListToRelative(coordinates, agentState.getX(), agentState.getY());
+        AgentMemoryFragment memoryFragment = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
+        if(memoryFragment != null)
+            coordinates = perception.shortWithManhattanDistance(coordinates,memoryFragment.getCoordinates().get(0).getX(),memoryFragment.getCoordinates().get(0).getY());
+        for(Coordinate c : coordinates){
+            if(perception.getCellPerceptionOnRelPos(c.getX(), c.getY()) != null && perception.getCellPerceptionOnRelPos(c.getX(),c.getY()).isWalkable()
+                && !perception.getCellPerceptionOnRelPos(c.getX(), c.getY()).containsEnergyStation()){
+                agentAction.putPacket(agentState.getX() + c.getX(),agentState.getY() + c.getY());
                 return true;
             }
         }
@@ -68,7 +71,7 @@ public class HasPacketBehavior extends Wander {
         // If no destinations in perception, wander randomly.
         if(destinations.isEmpty()){
             if (agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString()) != null) {
-                var destinationCoordinates = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
+                AgentMemoryFragment destinationCoordinates = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
                 AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
                 Coordinate undoPreviousMove = null, previousMove;
                 List<Coordinate> possibleNewLocations = generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
