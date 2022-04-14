@@ -19,12 +19,12 @@ public class DestinationSearchBehavior extends SearchBehavior {
             AgentMemoryFragment fragment = agentState.getMemoryFragment("lastMove");
             Coordinate undoPreviousMove = null, previousMove;
             List<Coordinate> possibleNewLocations = generatePossibleAbsolutePositions(agentState.getX(),agentState.getY());
-            List<Coordinate> destinationSortedCoordinates=prioritizeWithManhattan(possibleNewLocations,agentState.getPerception(),destinationCoordinates.getCoordinate());
+            List<Coordinate> destinationSortedCoordinates=prioritizeWithManhattan(possibleNewLocations,agentState.getPerception(), new Coordinate(0,0));//destinationCoordinates.getCoordinate());
             List<Coordinate> relativeSortedCoordinates=returnListToRelative(destinationSortedCoordinates,agentState.getX(),agentState.getY());
             List<Coordinate> accessibleFromPreviousAndCurrent = null;
 
             if (fragment != null) {
-                previousMove = fragment.getCoordinate();
+                previousMove = new Coordinate(0,0);//previousMove = fragment.getCoordinate();
                 undoPreviousMove = previousMove.invertedSign();
                 accessibleFromPreviousAndCurrent = commonElements(relativeSortedCoordinates, generateAllMovesFromCoordinate(undoPreviousMove));
                 accessibleFromPreviousAndCurrent.add(undoPreviousMove);
@@ -47,7 +47,7 @@ public class DestinationSearchBehavior extends SearchBehavior {
         super.act(agentState, agentAction);
     }
 
-    private List<Coordinate> returnListToRelative(List<Coordinate> destinationSortedCoordinates, int x, int y) {
+    protected List<Coordinate> returnListToRelative(List<Coordinate> destinationSortedCoordinates, int x, int y) {
         List<Coordinate> relativeCoordinates=new ArrayList<>();
         for(Coordinate cor : destinationSortedCoordinates){
             relativeCoordinates.add(new Coordinate(cor.getX()-x,cor.getY()-y));
@@ -55,7 +55,7 @@ public class DestinationSearchBehavior extends SearchBehavior {
         return relativeCoordinates;
     }
 
-    private List<Coordinate> generatePossibleAbsolutePositions(int x, int y) {
+    protected List<Coordinate> generatePossibleAbsolutePositions(int x, int y) {
         List<Coordinate> possiblePositions = new ArrayList<>();
         possiblePositions.add(new Coordinate(x-1,y-1));
         possiblePositions.add(new Coordinate(x,y-1));
@@ -68,7 +68,7 @@ public class DestinationSearchBehavior extends SearchBehavior {
         return possiblePositions;
     }
 
-    private List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
+    protected List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
         return currPerception.shortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
     }
 
