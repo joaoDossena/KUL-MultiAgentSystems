@@ -1,4 +1,4 @@
-package agent.behavior.impl.second;
+package agent.behavior.impl.v3;
 
 import agent.AgentState;
 import environment.CellPerception;
@@ -9,6 +9,7 @@ public class PacketVisibleBehavior extends VisibleBehavior<Packet> {
 
     @Override
     protected List<CellPerception> getTargets(AgentState agentState) {
+
         return agentState.getPerception().getPacketCells();
     }
 }

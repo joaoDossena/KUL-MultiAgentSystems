@@ -1,4 +1,4 @@
-package agent.behavior.impl.second.change;
+package agent.behavior.impl.v3.change;
 
 import agent.behavior.BehaviorChange;
 
@@ -11,6 +11,7 @@ public class DetectedPacketBehaviorChange extends BehaviorChange {
 
     @Override
     public boolean isSatisfied() {
+
         return this.getAgentState().seesPacket();
     }
 }

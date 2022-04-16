@@ -1,10 +1,11 @@
-package agent.behavior.impl.second.change;
+package agent.behavior.impl.v3.change;
 
 import agent.behavior.BehaviorChange;
+import environment.CellPerception;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class ReachedDestinationBehaviorChange extends BehaviorChange {
+public class ReachedPacketBehaviorChange extends BehaviorChange {
 
     @Override
     public void updateChange() {
@@ -16,6 +17,6 @@ public class ReachedDestinationBehaviorChange extends BehaviorChange {
 
         return Arrays.stream(this.getAgentState().getPerception().getNeighbours())
                      .filter(Objects::nonNull)
-                     .anyMatch(cellPerception -> cellPerception.containsDestination(this.getAgentState().getCarry().get().getColor()));
+                     .anyMatch(CellPerception::containsPacket);
     }
 }

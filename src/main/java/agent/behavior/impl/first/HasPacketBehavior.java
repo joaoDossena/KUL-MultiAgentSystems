@@ -11,6 +11,7 @@ import environment.world.agent.Agent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class HasPacketBehavior extends Wander {
     private final String ENERGY_STATIONS = "EnergyStations";
@@ -107,15 +108,12 @@ public class HasPacketBehavior extends Wander {
         // Otherwise, look for closest destination.
         CellPerception minCell = perception.getClosestCell(destinations, agentState.getX(), agentState.getY());
 
-        // Find the closest walkable move in the direction of minCell
-        List<Coordinate> moves = new ArrayList<>(List.of(
-                new Coordinate(1, 1), new Coordinate(-1, -1),
-                new Coordinate(1, -1), new Coordinate(-1, 1),
-                new Coordinate(1, 0), new Coordinate(-1, 0),
-                new Coordinate(0, 1), new Coordinate(0, -1)
-        ));
-
-        Coordinate minMove = perception.getShortestMoveToCell(minCell, moves, agentState.getX(), agentState.getY());
+        Optional<Coordinate> minMoveOpt = perception.getShortestMoveToCell(minCell, agentState.getX(), agentState.getY());
+        if(minMoveOpt.isEmpty()){
+            agentAction.skip();
+            return;
+        }
+        Coordinate minMove = minMoveOpt.get();
 
         agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(minMove.getX(), minMove.getY())));
         agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());

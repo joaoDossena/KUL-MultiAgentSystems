@@ -1,5 +1,7 @@
 package environment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -9,6 +11,10 @@ import util.Pair;
  * A class to represent a 2-dimensional coordinate.
  */
 public class Coordinate extends Pair<Integer, Integer> {
+
+    public static Coordinate of(int x, int y) {
+        return new Coordinate(x, y);
+    }
 
     public Coordinate(int x, int y) {
         super(x, y);
@@ -67,10 +73,35 @@ public class Coordinate extends Pair<Integer, Integer> {
         return new Coordinate(newFst, newSnd);
     }
 
+    public List<Coordinate> getNeighboursAbsolute() {
+
+        List<Coordinate> neighbours = new ArrayList<>();
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x == 0 && y == 0)
+                    continue;
+                neighbours.add(new Coordinate(getX() + x, getY() + y));
+            }
+        }
+        return neighbours;
+    }
+
+    public static List<Coordinate> getNeighboursRelative() {
+
+        List<Coordinate> neighbours = new ArrayList<>();
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x == 0 && y == 0)
+                    continue;
+                neighbours.add(new Coordinate(x, y));
+            }
+        }
+        return neighbours;
+    }
 
     @Override
     public boolean equals(Object other) {
-        if (! (other instanceof Coordinate casted))
+        if (!(other instanceof Coordinate casted))
             return false;
 
         if (casted.getX() != getX())

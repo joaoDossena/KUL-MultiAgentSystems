@@ -1,4 +1,4 @@
-package agent.behavior.impl.second;
+package agent.behavior.impl.v3;
 
 import agent.AgentAction;
 import agent.AgentState;
@@ -9,11 +9,13 @@ public class PickPacketActionBehavior extends ActionBehavior {
 
     @Override
     protected void doAction(AgentAction agentAction, CellPerception cell) {
+
         agentAction.pickPacket(cell.getX(), cell.getY());
     }
 
     @Override
     protected Predicate<CellPerception> getContainsTargetPredicate(AgentState agentState) {
+
         return CellPerception::containsPacket;
     }
 }
