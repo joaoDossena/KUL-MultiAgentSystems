@@ -6,6 +6,7 @@ import environment.CellPerception;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public abstract class ActionBehavior extends BehaviorV3 {
@@ -13,11 +14,17 @@ public abstract class ActionBehavior extends BehaviorV3 {
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
 
-        Arrays.stream(agentState.getPerception().getNeighbours())
+        Optional<CellPerception> optionalTarget = Arrays.stream(agentState.getPerception().getNeighbours())
                 .filter(Objects::nonNull)
                 .filter(getContainsTargetPredicate(agentState))
-                .findFirst()
-                .ifPresent(cell -> doAction(agentAction, cell));
+                .findFirst();
+
+        if(optionalTarget.isEmpty()) {
+            agentAction.skip();
+            return;
+        }
+
+        doAction(agentAction, optionalTarget.get());
     }
 
     protected abstract void doAction(AgentAction agentAction, CellPerception cell);
