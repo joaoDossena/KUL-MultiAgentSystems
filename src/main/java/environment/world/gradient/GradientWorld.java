@@ -5,6 +5,10 @@ import java.util.Collection;
 import com.google.common.eventbus.EventBus;
 
 import environment.World;
+import environment.world.energystation.EnergyStation;
+import environment.world.energystation.EnergyStationWorld;
+import environment.world.wall.Wall;
+import environment.world.wall.WallWorld;
 
 import static java.lang.Math.min;
 
@@ -44,8 +48,20 @@ public class GradientWorld extends World<Gradient> {
         int height = getEnvironment().getHeight();
         int width = getEnvironment().getWidth();
 
-        int limit = min(16, min(width, height));
+        int MAX_GRAD = 16;
+        int limit = min(MAX_GRAD, min(width, height));
+
         if (x < 0 || y < 0 || x >= width || y >= height || val > limit) {
+            return;
+        }
+
+        Wall wall = getEnvironment().getWorld(WallWorld.class).getItem(x, y);
+        if (wall != null) {
+            return;
+        }
+
+        EnergyStation energyStation = getEnvironment().getWorld(EnergyStationWorld.class).getItem(x, y);
+        if (energyStation != null && val > 0) {
             return;
         }
 
