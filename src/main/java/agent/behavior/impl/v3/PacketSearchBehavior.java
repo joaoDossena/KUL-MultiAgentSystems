@@ -19,7 +19,6 @@ public class PacketSearchBehavior extends SearchBehavior {
 
         var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
         Collections.shuffle(permittedMovesRel);
-        System.out.println("Agent Name: " + agentState.getName() + ", Agent Pos: " + agentState.getX() + agentState.getY() + ", permittedRel: " + permittedMovesRel);
         return permittedMovesRel;
     }
 }

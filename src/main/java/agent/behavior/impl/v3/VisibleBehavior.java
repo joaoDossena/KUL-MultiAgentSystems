@@ -52,6 +52,14 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
 
         List<Coordinate> path = aStar(minCell, agentState);
 
+        // If A* failed, just follow the gradients
+        if(path.isEmpty()){
+            var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
+            permittedMovesRel.sort(Comparator.comparingInt(coordinate -> compareGradients(coordinate, agentState)));
+            return permittedMovesRel.stream().findFirst()
+                    .map(rel -> Coordinate.of(rel.getX() + agentState.getX(), rel.getY() + agentState.getY()));
+        }
+
         return path.stream().skip(1).findFirst();
     }
 
@@ -104,7 +112,7 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
                 }
             }
         }
-        throw new RuntimeException("A* fail. Open set is empty but goal was never reached.");
+        return List.of();
     }
 
     private List<Coordinate> reconstructPath(Map<Coordinate, Coordinate> cameFrom, Coordinate current) {
@@ -119,7 +127,8 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
 
     private double heuristic(Coordinate c1, Coordinate c2) {
 
-        return Math.sqrt((c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
+        return Math.sqrt(
+                (c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
                 + (c1.getY() - c2.getY()) * (c1.getY() - c2.getY()));
     }
 

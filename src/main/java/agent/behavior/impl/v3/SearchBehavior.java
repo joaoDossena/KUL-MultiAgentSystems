@@ -33,7 +33,6 @@ public abstract class SearchBehavior extends BehaviorV3 {
         }
 
         var bestMove = optimizedMoves.get(0);
-        System.out.println("Agent Name: " + agentState.getName() + ", Agent Pos: " + agentState.getX() + agentState.getY() + ", will go to: " + bestMove);
         agentState.addMemoryFragment(LAST_MOVE.name(), new AgentMemoryFragment(Coordinate.of(bestMove.getX(), bestMove.getY())));
         agentAction.step(agentState.getX() + bestMove.getX(), agentState.getY() + bestMove.getY());
     }
@@ -76,8 +75,6 @@ public abstract class SearchBehavior extends BehaviorV3 {
         prioritizedMoves.addAll(accessibleOnlyFromCurrent);
         prioritizedMoves.addAll(accessibleFromPreviousAndCurrent);
 
-        System.out.println("Prioritized moves: " + prioritizedMoves);
-
         return prioritizedMoves;
     }
 
@@ -96,8 +93,6 @@ public abstract class SearchBehavior extends BehaviorV3 {
         moveToEndOfList(moves, right, (selfX == visionLen - 2 || selfX == visionLen - 3));
         moveToEndOfList(moves, up, (selfY == 1 || selfY == 2));
         moveToEndOfList(moves, down, (selfY == visionLen - 2 || selfY == visionLen - 3));
-
-        System.out.println("Moves: " + moves);
     }
 
     private void moveToEndOfList(List<Coordinate> list, Coordinate element, boolean predicate) {

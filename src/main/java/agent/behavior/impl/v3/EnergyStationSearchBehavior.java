@@ -17,12 +17,20 @@ public class EnergyStationSearchBehavior extends SearchBehavior {
     protected boolean doAction(AgentState agentState, AgentAction agentAction) {
 
         Optional<Packet> carry = agentState.getCarry();
-        if(carry.isEmpty()){
+        if (carry.isEmpty()) {
             return false;
         }
 
-        List<Coordinate> permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
-        if(permittedMovesRel.isEmpty()){
+        List<Coordinate> permittedMovesRel =
+                agentState.getPerception().getPermittedMovesRel().stream()
+                        .filter(coordinate -> agentState.getPerception()
+                                .getCellPerceptionOnRelPos(coordinate.getX(), coordinate.getY() + 1) != null)
+                        .filter(coordinate -> !agentState.getPerception()
+                                .getCellPerceptionOnRelPos(coordinate.getX(), coordinate.getY() + 1)
+                                .containsEnergyStation())
+                        .toList();
+
+        if (permittedMovesRel.isEmpty()) {
             agentAction.skip();
             return true;
         }
@@ -40,16 +48,5 @@ public class EnergyStationSearchBehavior extends SearchBehavior {
         permittedMovesRel.sort(Comparator.comparingInt(coordinate -> compareGradients(coordinate, agentState)));
 
         return permittedMovesRel;
-    }
-
-    private Integer compareGradients(Coordinate coordinate, AgentState agentState) {
-
-        CellPerception cell = agentState.getPerception().getCellPerceptionOnRelPos(coordinate.getX(), coordinate.getY());
-
-        if (cell == null || cell.getGradientRepresentation().isEmpty()) {
-            return Integer.MAX_VALUE;
-        }
-
-        return cell.getGradientRepresentation().get().getValue();
     }
 }

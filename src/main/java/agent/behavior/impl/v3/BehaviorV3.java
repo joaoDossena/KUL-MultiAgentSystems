@@ -33,6 +33,17 @@ public abstract class BehaviorV3 extends Behavior {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    protected Integer compareGradients(Coordinate coordinate, AgentState agentState) {
+
+        CellPerception cell = agentState.getPerception().getCellPerceptionOnRelPos(coordinate.getX(), coordinate.getY());
+
+        if (cell == null || cell.getGradientRepresentation().isEmpty()) {
+            return Integer.MAX_VALUE;
+        }
+
+        return cell.getGradientRepresentation().get().getValue();
+    }
+
     private void putEnergyStationsInMemory(AgentState agentState) {
 
         List<CellPerception> chargers = agentState.getPerception().getEnergyStations();
