@@ -14,14 +14,14 @@ import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.LAST_MOVE;
 
 public abstract class SearchBehavior extends BehaviorV3 {
 
-    protected abstract boolean initAct(AgentState agentState, AgentAction agentAction);
+    protected abstract boolean doAction(AgentState agentState, AgentAction agentAction);
 
     protected abstract List<Coordinate> getMovesInOrder(AgentState agentState);
 
     @Override
     public final void act(AgentState agentState, AgentAction agentAction) {
 
-        if (initAct(agentState, agentAction)) {
+        if (doAction(agentState, agentAction)) {
             return;
         }
 
@@ -33,6 +33,7 @@ public abstract class SearchBehavior extends BehaviorV3 {
         }
 
         var bestMove = optimizedMoves.get(0);
+        System.out.println("Agent Name: " + agentState.getName() + ", Agent Pos: " + agentState.getX() + agentState.getY() + ", will go to: " + bestMove);
         agentState.addMemoryFragment(LAST_MOVE.name(), new AgentMemoryFragment(Coordinate.of(bestMove.getX(), bestMove.getY())));
         agentAction.step(agentState.getX() + bestMove.getX(), agentState.getY() + bestMove.getY());
     }
@@ -60,16 +61,22 @@ public abstract class SearchBehavior extends BehaviorV3 {
         var accessibleOnlyFromCurrent = moves.stream()
                 .filter(Predicate.not(availableMovesOfPrevPos::contains))
                 .collect(Collectors.toCollection(ArrayList::new));
-        accessibleOnlyFromCurrent.remove(prevRelPos);
+        boolean prevRelPosExisted = accessibleOnlyFromCurrent.remove(prevRelPos);
 
         var accessibleFromPreviousAndCurrent = moves.stream()
                 .filter(availableMovesOfPrevPos::contains)
                 .collect(Collectors.toCollection(ArrayList::new));
-        accessibleFromPreviousAndCurrent.add(prevRelPos);
+
+        if(prevRelPosExisted){
+            accessibleFromPreviousAndCurrent.remove(prevRelPos);
+            accessibleFromPreviousAndCurrent.add(prevRelPos);
+        }
 
         var prioritizedMoves = new ArrayList<Coordinate>();
         prioritizedMoves.addAll(accessibleOnlyFromCurrent);
         prioritizedMoves.addAll(accessibleFromPreviousAndCurrent);
+
+        System.out.println("Prioritized moves: " + prioritizedMoves);
 
         return prioritizedMoves;
     }
@@ -89,6 +96,8 @@ public abstract class SearchBehavior extends BehaviorV3 {
         moveToEndOfList(moves, right, (selfX == visionLen - 2 || selfX == visionLen - 3));
         moveToEndOfList(moves, up, (selfY == 1 || selfY == 2));
         moveToEndOfList(moves, down, (selfY == visionLen - 2 || selfY == visionLen - 3));
+
+        System.out.println("Moves: " + moves);
     }
 
     private void moveToEndOfList(List<Coordinate> list, Coordinate element, boolean predicate) {

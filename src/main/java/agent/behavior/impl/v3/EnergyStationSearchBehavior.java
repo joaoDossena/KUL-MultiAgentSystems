@@ -14,7 +14,7 @@ public class EnergyStationSearchBehavior extends SearchBehavior {
 
 
     @Override
-    protected boolean initAct(AgentState agentState, AgentAction agentAction) {
+    protected boolean doAction(AgentState agentState, AgentAction agentAction) {
 
         Optional<Packet> carry = agentState.getCarry();
         if(carry.isEmpty()){

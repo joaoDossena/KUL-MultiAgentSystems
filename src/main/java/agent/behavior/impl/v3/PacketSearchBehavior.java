@@ -10,7 +10,7 @@ import java.util.List;
 public class PacketSearchBehavior extends SearchBehavior {
 
     @Override
-    protected boolean initAct(AgentState agentState, AgentAction agentAction) {
+    protected boolean doAction(AgentState agentState, AgentAction agentAction) {
         return false;
     }
 
@@ -19,6 +19,7 @@ public class PacketSearchBehavior extends SearchBehavior {
 
         var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
         Collections.shuffle(permittedMovesRel);
+        System.out.println("Agent Name: " + agentState.getName() + ", Agent Pos: " + agentState.getX() + agentState.getY() + ", permittedRel: " + permittedMovesRel);
         return permittedMovesRel;
     }
 }

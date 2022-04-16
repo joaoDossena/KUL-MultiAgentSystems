@@ -292,6 +292,9 @@ public class Perception {
     @Nullable
     public CellPerception getCellAt(int x, int y) {
         try {
+            if(x<0 || y<0 || x >= cells.length || y >= cells[0].length){
+                return null;
+            }
             return cells[x][y];
         } catch (ArrayIndexOutOfBoundsException exc) {
             return null;

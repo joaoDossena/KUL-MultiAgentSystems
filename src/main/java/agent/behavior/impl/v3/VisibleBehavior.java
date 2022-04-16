@@ -14,12 +14,20 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
 
     protected abstract List<CellPerception> getTargets(AgentState agentState);
 
+    protected abstract boolean doAction(AgentState agentState, AgentAction agentAction);
+
+
     @Override
     public final void act(AgentState agentState, AgentAction agentAction) {
 
+        if (doAction(agentState, agentAction)) {
+            return;
+        }
+
         var targets = getTargets(agentState);
         if (targets == null || targets.isEmpty()) {
-            throw new RuntimeException("Should have targets when target is visible.");
+            agentAction.skip();
+            return;
         }
 
         var minCell = agentState.getPerception().getClosestCell(targets, agentState.getX(), agentState.getY());
@@ -97,15 +105,6 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
             }
         }
         throw new RuntimeException("A* fail. Open set is empty but goal was never reached.");
-    }
-
-    private List<Coordinate> getPermittedMovesAbs(Coordinate coordinate, Perception perception) {
-
-        return coordinate.getNeighboursAbsolute().stream()
-                .filter(neighbour -> perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()) != null)
-                .filter(neighbour -> perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).isWalkable())
-                .filter(neighbour -> !perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).containsAgent())
-                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private List<Coordinate> reconstructPath(Map<Coordinate, Coordinate> cameFrom, Coordinate current) {

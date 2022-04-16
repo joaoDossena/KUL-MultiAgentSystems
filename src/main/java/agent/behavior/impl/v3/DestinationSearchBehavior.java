@@ -12,7 +12,7 @@ import java.util.List;
 public class DestinationSearchBehavior extends SearchBehavior {
 
     @Override
-    protected boolean initAct(AgentState agentState, AgentAction agentAction) {
+    protected boolean doAction(AgentState agentState, AgentAction agentAction) {
         return false;
     }
 

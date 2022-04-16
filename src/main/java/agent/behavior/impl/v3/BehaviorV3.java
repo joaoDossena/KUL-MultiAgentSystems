@@ -6,8 +6,11 @@ import agent.AgentState;
 import agent.behavior.Behavior;
 import environment.CellPerception;
 import environment.Coordinate;
+import environment.Perception;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.ENERGY_STATIONS;
 
@@ -19,6 +22,15 @@ public abstract class BehaviorV3 extends Behavior {
         putDestinationsInMemory(agentState);
         putEnergyStationsInMemory(agentState);
 
+    }
+
+    protected List<Coordinate> getPermittedMovesAbs(Coordinate coordinate, Perception perception) {
+
+        return coordinate.getNeighboursAbsolute().stream()
+                .filter(neighbour -> perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()) != null)
+                .filter(neighbour -> perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).isWalkable())
+                .filter(neighbour -> !perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).containsAgent())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private void putEnergyStationsInMemory(AgentState agentState) {
