@@ -6,6 +6,8 @@ import com.google.common.eventbus.EventBus;
 
 import environment.World;
 
+import static java.lang.Math.min;
+
 public class GradientWorld extends World<Gradient> {
 
     /**
@@ -34,5 +36,33 @@ public class GradientWorld extends World<Gradient> {
     @Override
     public void placeItem(Gradient item) {
         putItem(item);
+    }
+
+    // TODO: improve the algorithm
+    public void addGradientsWithStartLocation(int x, int y, int val) {
+
+        int height = getEnvironment().getHeight();
+        int width = getEnvironment().getWidth();
+
+        int limit = min(16, min(width, height));
+        if (x < 0 || y < 0 || x >= width || y >= height || val > limit) {
+            return;
+        }
+
+        Gradient existing = getItem(x, y);
+        if (existing != null && existing.getValue() < val) {
+            return;
+        }
+
+        placeItem(new Gradient(x, y, val));
+
+        addGradientsWithStartLocation(x - 1, y, val + 1);
+        addGradientsWithStartLocation(x - 1, y - 1, val + 1);
+        addGradientsWithStartLocation(x, y - 1, val + 1);
+        addGradientsWithStartLocation(x + 1, y - 1, val + 1);
+        addGradientsWithStartLocation(x + 1, y, val + 1);
+        addGradientsWithStartLocation(x + 1, y + 1, val + 1);
+        addGradientsWithStartLocation(x, y + 1, val + 1);
+        addGradientsWithStartLocation(x - 1, y + 1, val + 1);
     }
 }
