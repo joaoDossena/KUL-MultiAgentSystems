@@ -114,7 +114,7 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
     }
 
     @Override
-    public final void sendMessage(AgentRep receiver, ArrayList<Coordinate> energyStations) {
+    public final void sendMessage(AgentRep receiver, List<Coordinate> energyStations) {
         this.sendCoordinatesInMessage(receiver.getName(), energyStations);
     }
 
@@ -134,7 +134,7 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
 
 
 
-    private void sendCoordinatesInMessage(String to, ArrayList<Coordinate> stations) {
+    private void sendCoordinatesInMessage(String to, List<Coordinate> stations) {
         this.logger.fine(String.format("agentImp %d buffers a mail", getActiveItemID().getID()));
 
         Mail mail = new Mail(getName(), to, stations);

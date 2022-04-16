@@ -11,21 +11,22 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.LAST_MOVE;
+
 public abstract class SearchBehavior extends BehaviorV3 {
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
 
-        var availableMoves = agentState.getPerception().getPermittedMovesRel();
-        Collections.shuffle(availableMoves);
+        var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
+        Collections.shuffle(permittedMovesRel);
 
-        actWithLimitedMoves(agentState, agentAction, availableMoves);
+        actWithPermittedMovesRel(agentState, agentAction, permittedMovesRel);
     }
 
-    protected void actWithLimitedMoves(AgentState agentState, AgentAction agentAction, List<Coordinate> permittedMoves) {
+    protected void actWithPermittedMovesRel(AgentState agentState, AgentAction agentAction, List<Coordinate> permittedMovesRel) {
 
-        var prioritizedMoves = getMovesWithWorstAtTheEnd(agentState, permittedMoves);
-        var optimizedMoves = getOptimizedMoves(agentState, prioritizedMoves);
+        var optimizedMoves = getOptimizedMoves(agentState, permittedMovesRel);
 
         if (optimizedMoves == null || optimizedMoves.isEmpty()) {
             agentAction.skip();
@@ -33,28 +34,36 @@ public abstract class SearchBehavior extends BehaviorV3 {
         }
 
         var bestMove = optimizedMoves.get(0);
-        agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(bestMove.getX(), bestMove.getY())));
+        agentState.addMemoryFragment(LAST_MOVE.name(), new AgentMemoryFragment(Coordinate.of(bestMove.getX(), bestMove.getY())));
         agentAction.step(agentState.getX() + bestMove.getX(), agentState.getY() + bestMove.getY());
     }
 
-    protected List<Coordinate> getMovesWithWorstAtTheEnd(AgentState agentState, List<Coordinate> availableMoves) {
+    protected List<Coordinate> getOptimizedMoves(AgentState agentState, List<Coordinate> moves) {
 
-        var lastMove = agentState.getMemoryFragment("lastMove");
+        moves = getMovesWithPreviousMovesAtTheEnd(agentState, moves);
+        moveEdgeMovesAtTheEnd(agentState, moves);
+
+        return moves;
+    }
+
+    protected List<Coordinate> getMovesWithPreviousMovesAtTheEnd(AgentState agentState, List<Coordinate> moves) {
+
+        var lastMove = agentState.getMemoryFragment(LAST_MOVE.name());
 
         if (lastMove == null) {
-            return availableMoves;
+            return moves;
         }
 
         var prevRelPos = lastMove.getCoordinates().get(0).invertedSign();
 
         var availableMovesOfPrevPos = prevRelPos.getNeighboursAbsolute();
 
-        var accessibleOnlyFromCurrent = availableMoves.stream()
+        var accessibleOnlyFromCurrent = moves.stream()
                 .filter(Predicate.not(availableMovesOfPrevPos::contains))
                 .collect(Collectors.toCollection(ArrayList::new));
         accessibleOnlyFromCurrent.remove(prevRelPos);
 
-        var accessibleFromPreviousAndCurrent = availableMoves.stream()
+        var accessibleFromPreviousAndCurrent = moves.stream()
                 .filter(availableMovesOfPrevPos::contains)
                 .collect(Collectors.toCollection(ArrayList::new));
         accessibleFromPreviousAndCurrent.add(prevRelPos);
@@ -66,27 +75,28 @@ public abstract class SearchBehavior extends BehaviorV3 {
         return prioritizedMoves;
     }
 
-    protected List<Coordinate> getOptimizedMoves(AgentState agentState, List<Coordinate> moves) {
+    private void moveEdgeMovesAtTheEnd(AgentState agentState, List<Coordinate> moves) {
 
-        var perception = agentState.getPerception();
-        var vision = perception.getAllVision();
+        var selfX = agentState.getPerception().getSelfX();
+        var selfY = agentState.getPerception().getSelfY();
+        var visionLen = agentState.getPerception().getAllVision().length;
 
-        if (perception.getSelfX() == 1 || perception.getSelfX() == 2) {
-            moves.remove(new Coordinate(-1, 0));
-            moves.add(new Coordinate(-1, 0));
-        } else if (perception.getSelfX() == vision.length - 2 || perception.getSelfX() == vision.length - 3) {
-            moves.remove(new Coordinate(1, 0));
-            moves.add(new Coordinate(1, 0));
+        var left = Coordinate.of(-1, 0);
+        var right = Coordinate.of(1, 0);
+        var up = Coordinate.of(0, -1);
+        var down = Coordinate.of(0, 1);
+
+        moveToEndOfList(moves, left, (selfX == 1 || selfX == 2));
+        moveToEndOfList(moves, right, (selfX == visionLen - 2 || selfX == visionLen - 3));
+        moveToEndOfList(moves, up, (selfY == 1 || selfY == 2));
+        moveToEndOfList(moves, down, (selfY == visionLen - 2 || selfY == visionLen - 3));
+    }
+
+    private void moveToEndOfList(List<Coordinate> list, Coordinate element, boolean predicate) {
+
+        if (predicate && list.contains(element)) {
+            list.remove(element);
+            list.add(element);
         }
-
-        if (perception.getSelfY() == 1 || perception.getSelfY() == 2) {
-            moves.remove(new Coordinate(0, -1));
-            moves.add(new Coordinate(0, -1));
-        } else if (perception.getSelfY() == vision.length - 2 || perception.getSelfY() == vision.length - 3) {
-            moves.remove(new Coordinate(0, 1));
-            moves.add(new Coordinate(0, 1));
-        }
-
-        return moves;
     }
 }

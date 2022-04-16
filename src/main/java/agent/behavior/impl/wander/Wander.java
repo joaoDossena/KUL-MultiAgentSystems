@@ -26,27 +26,26 @@ public class Wander extends Behavior {
 
 
     private void communicateStations(AgentCommunication agentCommunication,Perception perception, AgentState agentState) {
-        var msgs=agentCommunication.getMessages();
-        System.out.println(msgs.size());
-        if(msgs!=null){
-            //System.out.println("Destinations will  be added to memory");
-            var energyStations=agentState.getMemoryFragment(ENERGY_STATIONS);
-                for(int i=0;i< msgs.size();i++) {
-                    if (msgs.get(i).getCoordinates() != null) {
-                        if (energyStations != null) {
-                            for (Coordinate cor : msgs.get(i).getCoordinates()) {
-                                energyStations.addToCoordinatesList(cor);
-                            }
-                        } else {
-                            agentState.addMemoryFragment(ENERGY_STATIONS, new AgentMemoryFragment(msgs.get(i).getCoordinates()));
-                            continue;
-                        }
 
-                        agentCommunication.removeMessage(i);
-                        agentState.addMemoryFragment(ENERGY_STATIONS, energyStations);
+        var msgs=agentCommunication.getMessages();
+
+        var energyStations=agentState.getMemoryFragment(ENERGY_STATIONS);
+        for(int i=0;i< msgs.size();i++) {
+            if (msgs.get(i).getCoordinates() != null) {
+                if (energyStations != null) {
+                    for (Coordinate cor : msgs.get(i).getCoordinates()) {
+                        energyStations.addToCoordinatesList(cor);
                     }
+                } else {
+                    agentState.addMemoryFragment(ENERGY_STATIONS, new AgentMemoryFragment(msgs.get(i).getCoordinates()));
+                    continue;
                 }
+
+                agentCommunication.removeMessage(i);
+                agentState.addMemoryFragment(ENERGY_STATIONS, energyStations);
             }
+        }
+
         var energyStates=agentState.getMemoryFragment(ENERGY_STATIONS);
         if(energyStates!=null) {
             ArrayList<AgentRep> visibleAgents = perception.getVisibleAgents();

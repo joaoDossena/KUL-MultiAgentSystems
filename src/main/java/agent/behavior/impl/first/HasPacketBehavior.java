@@ -38,8 +38,8 @@ public class HasPacketBehavior extends Wander {
         AgentMemoryFragment memoryfragment = agentState.getMemoryFragment(ENERGY_STATIONS);
         if(memoryfragment == null) return false;
 
-        ArrayList<Coordinate> stations = memoryfragment.getCoordinates();
-        stations = (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
+        List<Coordinate> stations = memoryfragment.getCoordinates();
+        stations = perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
         if((currentEnergy-calculateDistanceWithEnergy(10, agentState, new Coordinate(stations.get(0).getX(), stations.get(0).getY()-1))) < 405){
             placePacketDown(agentAction, agentState);
             return true;

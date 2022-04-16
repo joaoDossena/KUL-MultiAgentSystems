@@ -3,22 +3,27 @@ package agent;
 import environment.Coordinate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AgentMemoryFragment {
-    private ArrayList<Coordinate> coordinates = null;
+    private final List<Coordinate> coordinates;
 
-    public AgentMemoryFragment(Coordinate coordinate){
-        coordinates=new ArrayList<>();
+    public AgentMemoryFragment(Coordinate coordinate) {
+        coordinates = new ArrayList<>();
         addToCoordinatesList(coordinate);
     }
 
-    public AgentMemoryFragment(ArrayList<Coordinate> coordinates){
-        this.coordinates=coordinates;
+    public AgentMemoryFragment(List<Coordinate> coordinates) {
+        this.coordinates = coordinates;
     }
 
-    public void addToCoordinatesList (Coordinate coordinate){
-        if(!coordinates.contains(coordinate)) coordinates.add(coordinate);
+    public void addToCoordinatesList(Coordinate coordinate) {
+        if (!coordinates.contains(coordinate)){
+            coordinates.add(coordinate);
+        }
     }
 
-    public ArrayList<Coordinate> getCoordinates() { return this.coordinates; }
+    public List<Coordinate> getCoordinates() {
+        return this.coordinates;
+    }
 }

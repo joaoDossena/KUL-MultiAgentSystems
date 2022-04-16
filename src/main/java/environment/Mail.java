@@ -3,6 +3,7 @@ package environment;
 import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Mail {
 
@@ -12,13 +13,13 @@ public class Mail {
         this.message=message;
     }
 
-    public Mail(String from, String to, ArrayList<Coordinate> coordinates){
+    public Mail(String from, String to, List<Coordinate> coordinates){
         this.from=from;
         this.to=to;
         this.coordinates=coordinates;
     }
 
-    private ArrayList<Coordinate> coordinates;
+    private List<Coordinate> coordinates;
 
     private String from;
 
@@ -38,6 +39,6 @@ public class Mail {
         return message;
     }
 
-    public ArrayList<Coordinate> getCoordinates(){ return coordinates;}
+    public List<Coordinate> getCoordinates(){ return coordinates;}
 
 }

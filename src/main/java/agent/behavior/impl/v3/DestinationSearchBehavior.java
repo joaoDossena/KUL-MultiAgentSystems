@@ -25,7 +25,7 @@ public class DestinationSearchBehavior extends SearchBehavior {
 
         relativeSortedCoordinates.removeIf(c -> !agentState.getPerception().getPermittedMovesRel().contains(c));
 
-        super.actWithLimitedMoves(agentState, agentAction, relativeSortedCoordinates);
+        super.actWithPermittedMovesRel(agentState, agentAction, relativeSortedCoordinates);
     }
 
     protected List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {

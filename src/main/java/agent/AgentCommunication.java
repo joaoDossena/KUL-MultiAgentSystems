@@ -2,6 +2,7 @@ package agent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import environment.Coordinate;
 import environment.Mail;
@@ -20,7 +21,7 @@ public interface AgentCommunication {
      */
     void sendMessage(AgentRep receiver, String message);
 
-    void sendMessage(AgentRep receiver, ArrayList<Coordinate> message);
+    void sendMessage(AgentRep receiver, List<Coordinate> message);
 
     /**
      * Broadcast a message to all other agents.

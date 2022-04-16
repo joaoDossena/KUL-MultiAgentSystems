@@ -9,6 +9,8 @@ import environment.Coordinate;
 
 import java.util.List;
 
+import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.ENERGY_STATIONS;
+
 public abstract class BehaviorV3 extends Behavior {
 
     @Override
@@ -26,12 +28,12 @@ public abstract class BehaviorV3 extends Behavior {
         List<CellPerception> chargers = agentState.getPerception().getEnergyStations();
 
         for (CellPerception station : chargers) {
-            var stations = agentState.getMemoryFragment("energyStations");
+            var stations = agentState.getMemoryFragment(ENERGY_STATIONS.name());
             if (stations == null) {
-                agentState.addMemoryFragment("energyStations", new AgentMemoryFragment(Coordinate.of(station.getX(), station.getY())));
+                agentState.addMemoryFragment(ENERGY_STATIONS.name(), new AgentMemoryFragment(Coordinate.of(station.getX(), station.getY())));
             } else {
                 stations.addToCoordinatesList(station.toCoordinate());
-                agentState.addMemoryFragment("energyStations", stations);
+                agentState.addMemoryFragment(ENERGY_STATIONS.name(), stations);
             }
         }
     }
@@ -41,5 +43,9 @@ public abstract class BehaviorV3 extends Behavior {
         var destinations = agentState.getPerception().getDestinationCells();
         destinations.forEach((k, v) ->
                 agentState.addMemoryFragment(k.toString(), new AgentMemoryFragment(Coordinate.of(v.getX(), v.getY()))));
+    }
+
+    enum MemoryEnum {
+        ENERGY_STATIONS, LAST_MOVE;
     }
 }
