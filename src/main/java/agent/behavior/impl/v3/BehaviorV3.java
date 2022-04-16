@@ -13,13 +13,14 @@ import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.ENERGY_STATIONS;
 
 public abstract class BehaviorV3 extends Behavior {
 
+
+
     @Override
-    public void communicate(AgentState agentState, AgentCommunication agentCommunication) {
+    public final void communicate(AgentState agentState, AgentCommunication agentCommunication) {
 
         putDestinationsInMemory(agentState);
         putEnergyStationsInMemory(agentState);
 
-        // TODO: communicate the stations
     }
 
 

@@ -6,7 +6,6 @@ import agent.AgentState;
 import environment.Coordinate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -15,18 +14,18 @@ import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.LAST_MOVE;
 
 public abstract class SearchBehavior extends BehaviorV3 {
 
+    protected abstract boolean initAct(AgentState agentState, AgentAction agentAction);
+
+    protected abstract List<Coordinate> getMovesInOrder(AgentState agentState);
+
     @Override
-    public void act(AgentState agentState, AgentAction agentAction) {
+    public final void act(AgentState agentState, AgentAction agentAction) {
 
-        var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
-        Collections.shuffle(permittedMovesRel);
+        if(initAct(agentState, agentAction)){
+            return;
+        }
 
-        actWithPermittedMovesRel(agentState, agentAction, permittedMovesRel);
-    }
-
-    protected void actWithPermittedMovesRel(AgentState agentState, AgentAction agentAction, List<Coordinate> permittedMovesRel) {
-
-        var optimizedMoves = getOptimizedMoves(agentState, permittedMovesRel);
+        var optimizedMoves = getOptimizedMoves(agentState, getMovesInOrder(agentState));
 
         if (optimizedMoves == null || optimizedMoves.isEmpty()) {
             agentAction.skip();
@@ -38,7 +37,7 @@ public abstract class SearchBehavior extends BehaviorV3 {
         agentAction.step(agentState.getX() + bestMove.getX(), agentState.getY() + bestMove.getY());
     }
 
-    protected List<Coordinate> getOptimizedMoves(AgentState agentState, List<Coordinate> moves) {
+    private List<Coordinate> getOptimizedMoves(AgentState agentState, List<Coordinate> moves) {
 
         moves = getMovesWithPreviousMovesAtTheEnd(agentState, moves);
         moveEdgeMovesAtTheEnd(agentState, moves);
@@ -46,7 +45,7 @@ public abstract class SearchBehavior extends BehaviorV3 {
         return moves;
     }
 
-    protected List<Coordinate> getMovesWithPreviousMovesAtTheEnd(AgentState agentState, List<Coordinate> moves) {
+    private List<Coordinate> getMovesWithPreviousMovesAtTheEnd(AgentState agentState, List<Coordinate> moves) {
 
         var lastMove = agentState.getMemoryFragment(LAST_MOVE.name());
 

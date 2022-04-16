@@ -7,6 +7,8 @@ import com.google.common.eventbus.EventBus;
 import environment.World;
 import environment.world.energystation.EnergyStation;
 import environment.world.energystation.EnergyStationWorld;
+import environment.world.packet.Packet;
+import environment.world.packet.PacketWorld;
 import environment.world.wall.Wall;
 import environment.world.wall.WallWorld;
 
@@ -57,6 +59,11 @@ public class GradientWorld extends World<Gradient> {
 
         Wall wall = getEnvironment().getWorld(WallWorld.class).getItem(x, y);
         if (wall != null) {
+            return;
+        }
+
+        Packet packet = getEnvironment().getWorld(PacketWorld.class).getItem(x, y);
+        if (packet != null) {
             return;
         }
 

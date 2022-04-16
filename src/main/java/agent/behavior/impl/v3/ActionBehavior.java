@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 public abstract class ActionBehavior extends BehaviorV3 {
 
     @Override
-    public void act(AgentState agentState, AgentAction agentAction) {
+    public final void act(AgentState agentState, AgentAction agentAction) {
 
         Optional<CellPerception> optionalTarget = Arrays.stream(agentState.getPerception().getNeighbours())
                 .filter(Objects::nonNull)

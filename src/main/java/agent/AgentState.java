@@ -54,6 +54,12 @@ public interface AgentState {
      */
     boolean seesPacket();
 
+    /**
+     * Check to see if this agent can see any energy station.
+     *
+     * @return {@code true} if this agent can see an energy station, {@code false} otherwise.
+     */
+    boolean seesEnergyStation();
 
 
     /**

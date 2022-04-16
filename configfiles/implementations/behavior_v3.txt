@@ -1,7 +1,7 @@
 description "Implementation for three different abstract behaviors. Action, Visible, Search"
 
 
-nbStates 6
+nbStates 9
 
 1 agent.behavior.impl.v3.PacketSearchBehavior
 nbArgs 0
@@ -21,7 +21,18 @@ nbArgs 0
 6 agent.behavior.impl.v3.PutPacketActionBehavior
 nbArgs 0
 
-nbChanges 6
+7 agent.behavior.impl.v3.EnergyStationSearchBehavior
+nbArgs 0
+
+8 agent.behavior.impl.v3.EnergyStationVisibleBehavior
+nbArgs 0
+
+9 agent.behavior.impl.v3.ChargeActionBehavior
+nbArgs 0
+
+
+
+nbChanges 13
 
 agent.behavior.impl.v3.change.DetectedDestinationBehaviorChange
 nbArgs 0
@@ -59,3 +70,44 @@ priority 0
 source 6
 target 1
 
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 1
+target 7
+
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 2
+target 7
+
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 3
+target 7
+
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 4
+target 7
+
+agent.behavior.impl.v3.change.StopChargingBehaviorChange
+nbArgs 0
+priority 0
+source 9
+target 1
+
+agent.behavior.impl.v3.change.DetectedEnergyStationBehaviorChange
+nbArgs 0
+priority 0
+source 7
+target 8
+
+agent.behavior.impl.v3.change.ReachedEnergyStationBehaviorChange
+nbArgs 0
+priority 0
+source 8
+target 9

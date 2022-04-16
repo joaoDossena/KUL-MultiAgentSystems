@@ -12,7 +12,7 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
     protected abstract List<CellPerception> getTargets(AgentState agentState);
 
     @Override
-    public void act(AgentState agentState, AgentAction agentAction) {
+    public final void act(AgentState agentState, AgentAction agentAction) {
 
         var minCell = agentState.getPerception().getClosestCell(getTargets(agentState), agentState.getX(), agentState.getY());
 

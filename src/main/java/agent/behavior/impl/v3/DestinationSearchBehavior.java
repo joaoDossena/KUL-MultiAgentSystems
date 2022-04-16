@@ -6,17 +6,24 @@ import environment.Coordinate;
 import environment.Perception;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DestinationSearchBehavior extends SearchBehavior {
 
     @Override
-    public void act(AgentState agentState, AgentAction agentAction) {
+    protected boolean initAct(AgentState agentState, AgentAction agentAction) {
+        return false;
+    }
+
+    @Override
+    protected List<Coordinate> getMovesInOrder(AgentState agentState) {
 
         var destinationMem = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
         if (destinationMem == null || destinationMem.getCoordinates() == null || destinationMem.getCoordinates().isEmpty()) {
-            super.act(agentState, agentAction);
-            return;
+            var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
+            Collections.shuffle(permittedMovesRel);
+            return permittedMovesRel;
         }
 
         var possibleNewLocations = Coordinate.of(agentState.getX(), agentState.getY()).getNeighboursAbsolute();
@@ -25,7 +32,7 @@ public class DestinationSearchBehavior extends SearchBehavior {
 
         relativeSortedCoordinates.removeIf(c -> !agentState.getPerception().getPermittedMovesRel().contains(c));
 
-        super.actWithPermittedMovesRel(agentState, agentAction, relativeSortedCoordinates);
+        return relativeSortedCoordinates;
     }
 
     protected List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {

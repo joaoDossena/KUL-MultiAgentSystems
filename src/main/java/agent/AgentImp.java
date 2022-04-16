@@ -8,6 +8,7 @@ import environment.*;
 import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
 import environment.world.destination.DestinationRep;
+import environment.world.energystation.EnergyStationRep;
 import environment.world.generator.PacketGenerator;
 import environment.world.packet.Packet;
 import environment.world.packet.PacketRep;
@@ -634,6 +635,23 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
     }
 
 
+    @Override
+    public boolean seesEnergyStation() {
+        int vw = getPerception().getWidth();
+        int vh = getPerception().getHeight();
+        for (int i = 0; i < vw; i++) {
+            for (int j = 0; j < vh; j++) {
+                var per = this.getPerception().getCellAt(i, j);
+                if (per != null) {
+                    EnergyStationRep p = per.getRepOfType(EnergyStationRep.class);
+                    if (p != null) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Adds a memory fragment to this agent (if its memory is not full).
