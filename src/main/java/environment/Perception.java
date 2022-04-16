@@ -497,11 +497,17 @@ public class Perception {
         return temp;
     }
 
+    // TODO: Now we're using euclidian distance, but in the future we might need to account for walls and stuff.
     public CellPerception getClosestCell(List<CellPerception> possibleCells, int x, int y) {
-        if (possibleCells.isEmpty()) return null;
-        // TODO: Now we're using euclidian distance, but in the future we might need to account for walls and stuff.
+
+        if (possibleCells.isEmpty()){
+            return null;
+        }
+
         CellPerception minCell = possibleCells.get(0);
+
         int minDistance = euclideanDistance(minCell.getX(), minCell.getY(), x, y);
+
         for (int i = 1; i < possibleCells.size(); i++) {
             int distance = euclideanDistance(possibleCells.get(i).getX(), possibleCells.get(i).getY(), x, y);
             if (distance < minDistance) {
@@ -543,6 +549,8 @@ public class Perception {
                 .filter(neighbour -> !getCellPerceptionOnRelPos(neighbour.getX(), neighbour.getY()).containsAgent())
                 .collect(Collectors.toCollection(ArrayList::new));
     }
+
+
 
     public CellPerception[][] getAllVision() {
         return cells;

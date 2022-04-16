@@ -21,7 +21,7 @@ public abstract class SearchBehavior extends BehaviorV3 {
     @Override
     public final void act(AgentState agentState, AgentAction agentAction) {
 
-        if(initAct(agentState, agentAction)){
+        if (initAct(agentState, agentAction)) {
             return;
         }
 

@@ -13,8 +13,6 @@ import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.ENERGY_STATIONS;
 
 public abstract class BehaviorV3 extends Behavior {
 
-
-
     @Override
     public final void communicate(AgentState agentState, AgentCommunication agentCommunication) {
 
@@ -23,8 +21,7 @@ public abstract class BehaviorV3 extends Behavior {
 
     }
 
-
-    protected void putEnergyStationsInMemory(AgentState agentState) {
+    private void putEnergyStationsInMemory(AgentState agentState) {
 
         List<CellPerception> chargers = agentState.getPerception().getEnergyStations();
 
@@ -39,7 +36,7 @@ public abstract class BehaviorV3 extends Behavior {
         }
     }
 
-    protected void putDestinationsInMemory(AgentState agentState) {
+    private void putDestinationsInMemory(AgentState agentState) {
 
         var destinations = agentState.getPerception().getDestinationCells();
         destinations.forEach((k, v) ->
