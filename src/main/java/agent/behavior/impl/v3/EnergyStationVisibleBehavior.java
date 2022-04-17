@@ -16,8 +16,12 @@ public class EnergyStationVisibleBehavior extends VisibleBehavior<EnergyStation>
 
         CellPerception[][] cells = agentState.getPerception().getAllVision();
         for (int i = 0; i < cells.length; i++) {
-            for (int j = 1; j < cells[i].length; j++) {
-                if (cells[i][j] != null && cells[i][j].containsEnergyStation() && !cells[i][j-1].containsAgent()) {
+            for (int j = 3; j < cells[i].length; j++) {
+                if (cells[i][j] != null && cells[i][j - 1] != null && cells[i][j - 2] != null && cells[i][j - 3] != null
+                        && cells[i][j].containsEnergyStation()
+                        && (!cells[i][j-1].containsAgent() || cells[i][j-1].getAgentRepresentation().get().getName().equals(agentState.getName()))
+                        && (!cells[i][j-2].containsAgent() || cells[i][j-2].getAgentRepresentation().get().getName().equals(agentState.getName()))
+                        && (!cells[i][j-3].containsAgent() || cells[i][j-3].getAgentRepresentation().get().getName().equals(agentState.getName()))) {
                     return Optional.of(cells[i][j]);
                 }
             }
