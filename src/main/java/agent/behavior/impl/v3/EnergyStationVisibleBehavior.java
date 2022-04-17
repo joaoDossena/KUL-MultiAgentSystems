@@ -12,9 +12,18 @@ import java.util.Optional;
 public class EnergyStationVisibleBehavior extends VisibleBehavior<EnergyStation> {
 
     @Override
-    protected List<CellPerception> getTargets(AgentState agentState) {
+    protected Optional<CellPerception> getTarget(AgentState agentState) {
 
-        return agentState.getPerception().getEnergyStations();
+        CellPerception[][] cells = agentState.getPerception().getAllVision();
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 1; j < cells[i].length; j++) {
+                if (cells[i][j] != null && cells[i][j].containsEnergyStation() && !cells[i][j-1].containsAgent()) {
+                    return Optional.of(cells[i][j]);
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 
     @Override

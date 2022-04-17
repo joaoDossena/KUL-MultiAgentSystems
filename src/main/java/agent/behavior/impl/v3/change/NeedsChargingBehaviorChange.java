@@ -12,7 +12,7 @@ public class NeedsChargingBehaviorChange extends BehaviorChange {
     @Override
     public boolean isSatisfied() {
 
-        int CRITICAL_LEVEL = 400;
+        int CRITICAL_LEVEL = 500;
 
         return this.getAgentState().getBatteryState() < CRITICAL_LEVEL;
     }
