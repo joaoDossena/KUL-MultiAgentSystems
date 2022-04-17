@@ -13,7 +13,7 @@ public class StopChargingBehaviorChange extends BehaviorChange {
     @Override
     public boolean isSatisfied() {
 
-        int STOP_CHARGING_LEVEL = 900;
+        int STOP_CHARGING_LEVEL = 980;
 
         return this.getAgentState().getBatteryState() > STOP_CHARGING_LEVEL;
     }

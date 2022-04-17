@@ -14,14 +14,18 @@ import java.util.Optional;
 public class DestinationVisibleBehavior extends VisibleBehavior<Destination> {
 
     @Override
-    protected List<CellPerception> getTargets(AgentState agentState) {
+    protected Optional<CellPerception> getTarget(AgentState agentState) {
 
         Optional<Packet> carry = agentState.getCarry();
         if (carry.isEmpty()) {
             throw new RuntimeException("Should carry when behavior is DestinationVisibleBehavior");
         }
 
-        return agentState.getPerception().getDestinationCells(carry.get().getColor());
+        var target = agentState.getPerception().getClosestCell(
+                agentState.getPerception().getDestinationCells(carry.get().getColor()),
+                agentState.getX(), agentState.getY());
+
+        return target == null ? Optional.empty() : Optional.of(target);
     }
 
     @Override
