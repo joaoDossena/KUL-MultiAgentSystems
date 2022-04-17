@@ -16,7 +16,12 @@ public abstract class BehaviorV3 extends Behavior {
     @Override
     public final void communicate(AgentState agentState, AgentCommunication agentCommunication) {
 
-        putDestinationsInMemory(agentState);
+        try {
+            putDestinationsInMemory(agentState);
+        } catch (RuntimeException e) {
+            System.out.println("Exception during put in memory: " + e.getMessage());
+        }
+
     }
 
     protected List<Coordinate> getAllPermittedMovesInRandomOrderRel(AgentState agentState) {
