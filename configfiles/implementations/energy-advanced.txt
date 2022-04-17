@@ -18,10 +18,10 @@ nbArgs 0
 5 agent.behavior.impl.v3.EnergyStationSearchBehavior
 nbArgs 0
 
-6 agent.behavior.impl.v3.EnergyStationVisibleBehavior
+6 agent.behavior.impl.advanced.AdvancedEnergyStationVisibleBehavior
 nbArgs 0
 
-7 agent.behavior.impl.v3.EnergyStationOccupiedBehavior
+7 agent.behavior.impl.advanced.AdvancedEnergyStationOccupiedBehavior
 nbArgs 0
 
 
@@ -87,13 +87,13 @@ priority 0
 source 6
 target 1
 
-agent.behavior.impl.v3.change.EnergyStationOccupiedBehaviorChange
+agent.behavior.impl.advanced.change.EnergyStationOccupiedBehaviorChange
 nbArgs 0
 priority 1
 source 6
 target 7
 
-agent.behavior.impl.v3.change.EnergyStationOpenBehaviorChange
+agent.behavior.impl.advanced.change.EnergyStationOpenBehaviorChange
 nbArgs 0
 priority 1
 source 7

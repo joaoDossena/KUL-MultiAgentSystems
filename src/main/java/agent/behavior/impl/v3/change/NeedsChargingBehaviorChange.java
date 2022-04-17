@@ -14,10 +14,11 @@ public class NeedsChargingBehaviorChange extends BehaviorChange {
     @Override
     public boolean isSatisfied() {
 
-        Random r = new Random();
-        int low = 400;
+        Random random = new Random();
+        int low = 500;
         int high = 600;
-        int CRITICAL_LEVEL = r.nextInt(high-low) + low;;
+
+        int CRITICAL_LEVEL = random.nextInt(high - low) + low;
 
         return this.getAgentState().getBatteryState() < CRITICAL_LEVEL;
     }

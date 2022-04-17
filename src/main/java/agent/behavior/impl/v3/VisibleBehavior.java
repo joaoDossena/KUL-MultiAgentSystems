@@ -29,7 +29,6 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
         }
 
         var bestMoveOpt = findBestMove(target.get(), agentState);
-//        var minMoveOpt = agentState.getPerception().getShortestMoveToCell(minCell, agentState.getX(), agentState.getY());
 
         if (bestMoveOpt.isEmpty()) {
             agentAction.skip();
@@ -37,20 +36,5 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
         }
 
         agentAction.step(bestMoveOpt.get().getX(), bestMoveOpt.get().getY());
-    }
-
-    private Optional<Coordinate> findBestMove(CellPerception minCell, AgentState agentState) {
-
-        List<Coordinate> path = aStar(minCell, agentState);
-
-        // If A* failed, just follow the gradients
-        if(path.isEmpty()){
-            var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
-            permittedMovesRel.sort(Comparator.comparingInt(coordinate -> compareGradients(coordinate, agentState)));
-            return permittedMovesRel.stream().findFirst()
-                    .map(rel -> Coordinate.of(rel.getX() + agentState.getX(), rel.getY() + agentState.getY()));
-        }
-
-        return path.stream().skip(1).findFirst();
     }
 }

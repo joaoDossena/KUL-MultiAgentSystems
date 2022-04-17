@@ -1,4 +1,4 @@
-package agent.behavior.impl.v3.change;
+package agent.behavior.impl.advanced.change;
 
 import agent.behavior.BehaviorChange;
 import environment.CellPerception;
