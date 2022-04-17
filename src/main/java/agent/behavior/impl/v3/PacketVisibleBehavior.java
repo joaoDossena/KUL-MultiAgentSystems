@@ -13,13 +13,9 @@ import java.util.Optional;
 public class PacketVisibleBehavior extends VisibleBehavior<Packet> {
 
     @Override
-    protected Optional<CellPerception> getTarget(AgentState agentState) {
+    protected List<CellPerception> getTargets(AgentState agentState) {
 
-        var target = agentState.getPerception().getClosestCell(
-                agentState.getPerception().getPacketCells(),
-                agentState.getX(), agentState.getY());
-
-        return target == null ? Optional.empty() : Optional.of(target);
+        return agentState.getPerception().getPacketCells();
     }
 
     @Override
