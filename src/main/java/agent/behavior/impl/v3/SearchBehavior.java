@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.LAST_MOVE;
+import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.LAST_MOVES;
 
 public abstract class SearchBehavior extends BehaviorV3 {
 
     protected abstract boolean doAction(AgentState agentState, AgentAction agentAction);
 
-    protected abstract List<Coordinate> getMovesInOrder(AgentState agentState);
+    protected abstract List<Coordinate> getMovesInOrderRel(AgentState agentState);
 
     @Override
     public final void act(AgentState agentState, AgentAction agentAction) {
@@ -25,7 +25,7 @@ public abstract class SearchBehavior extends BehaviorV3 {
             return;
         }
 
-        var optimizedMoves = getOptimizedMoves(agentState, getMovesInOrder(agentState));
+        var optimizedMoves = getOptimizedMoves(agentState, getMovesInOrderRel(agentState));
 
         if (optimizedMoves == null || optimizedMoves.isEmpty()) {
             agentAction.skip();
@@ -33,7 +33,7 @@ public abstract class SearchBehavior extends BehaviorV3 {
         }
 
         var bestMove = optimizedMoves.get(0);
-        agentState.addMemoryFragment(LAST_MOVE.name(), new AgentMemoryFragment(Coordinate.of(bestMove.getX(), bestMove.getY())));
+        agentState.addMemoryFragment(LAST_MOVES.name(), new AgentMemoryFragment(Coordinate.of(bestMove.getX(), bestMove.getY())));
         agentAction.step(agentState.getX() + bestMove.getX(), agentState.getY() + bestMove.getY());
     }
 
@@ -47,13 +47,13 @@ public abstract class SearchBehavior extends BehaviorV3 {
 
     private List<Coordinate> getMovesWithPreviousMovesAtTheEnd(AgentState agentState, List<Coordinate> moves) {
 
-        var lastMove = agentState.getMemoryFragment(LAST_MOVE.name());
+        var lastMoves = agentState.getMemoryFragment(LAST_MOVES.name());
 
-        if (lastMove == null) {
+        if (lastMoves == null) {
             return moves;
         }
 
-        var prevRelPos = lastMove.getCoordinates().get(0).invertedSign();
+        var prevRelPos = lastMoves.getCoordinates().get(0).invertedSign();
 
         var availableMovesOfPrevPos = prevRelPos.getNeighboursAbsolute();
 

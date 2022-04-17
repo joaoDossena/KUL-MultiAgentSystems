@@ -11,16 +11,21 @@ import environment.Perception;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.ENERGY_STATIONS;
-
 public abstract class BehaviorV3 extends Behavior {
 
     @Override
     public final void communicate(AgentState agentState, AgentCommunication agentCommunication) {
 
         putDestinationsInMemory(agentState);
-//        putEnergyStationsInMemory(agentState);
+    }
 
+    protected List<Coordinate> getAllPermittedMovesInRandomOrderRel(AgentState agentState) {
+
+        var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
+
+        Collections.shuffle(permittedMovesRel);
+
+        return permittedMovesRel;
     }
 
     protected List<Coordinate> getPermittedMovesAbs(Coordinate coordinate, Perception perception) {
@@ -43,29 +48,29 @@ public abstract class BehaviorV3 extends Behavior {
         return cell.getGradientRepresentation().get().getValue();
     }
 
-    private void putEnergyStationsInMemory(AgentState agentState) {
-
-        List<CellPerception> chargers = agentState.getPerception().getEnergyStations();
-
-        for (CellPerception station : chargers) {
-            var stations = agentState.getMemoryFragment(ENERGY_STATIONS.name());
-            if (stations == null) {
-                agentState.addMemoryFragment(ENERGY_STATIONS.name(), new AgentMemoryFragment(Coordinate.of(station.getX(), station.getY())));
-            } else {
-                stations.addToCoordinatesList(station.toCoordinate());
-                agentState.addMemoryFragment(ENERGY_STATIONS.name(), stations);
-            }
-        }
-    }
-
     private void putDestinationsInMemory(AgentState agentState) {
 
         var destinations = agentState.getPerception().getDestinationCells();
-        destinations.forEach((k, v) ->
-                agentState.addMemoryFragment(k.toString(), new AgentMemoryFragment(Coordinate.of(v.getX(), v.getY()))));
+        destinations.forEach((color, cell) ->
+                agentState.addMemoryFragment(color.toString(), new AgentMemoryFragment(Coordinate.of(cell.getX(), cell.getY()))));
     }
 
-    protected List<Coordinate> aStar(CellPerception targetCell, AgentState agentState) {
+    protected Optional<Coordinate> findBestMove(CellPerception minCell, AgentState agentState) {
+
+        List<Coordinate> path = aStar(minCell, agentState);
+
+        // If A* failed, just follow the gradients
+        if(path.isEmpty()){
+            var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
+            permittedMovesRel.sort(Comparator.comparingInt(coordinate -> compareGradients(coordinate, agentState)));
+            return permittedMovesRel.stream().findFirst()
+                    .map(rel -> Coordinate.of(rel.getX() + agentState.getX(), rel.getY() + agentState.getY()));
+        }
+
+        return path.stream().skip(1).findFirst();
+    }
+
+    private List<Coordinate> aStar(CellPerception targetCell, AgentState agentState) {
 
         Coordinate goal;
         if (this instanceof EnergyStationVisibleBehavior) {
@@ -85,7 +90,7 @@ public abstract class BehaviorV3 extends Behavior {
         gScore.put(start, 0);
 
         Map<Coordinate, Double> fScore = new HashMap<>();
-        fScore.put(start, heuristic(start, goal));
+        fScore.put(start, euclideanDistance(start, goal));
 
         while (!openSet.isEmpty()) {
 
@@ -108,7 +113,7 @@ public abstract class BehaviorV3 extends Behavior {
                 if (!gScore.containsKey(neighbour) || tentative_gScore < gScore.get(neighbour)) {
                     cameFrom.put(neighbour, current);
                     gScore.put(neighbour, tentative_gScore);
-                    fScore.put(neighbour, tentative_gScore + heuristic(neighbour, goal));
+                    fScore.put(neighbour, tentative_gScore + euclideanDistance(neighbour, goal));
                     openSet.add(neighbour);
                 }
             }
@@ -126,7 +131,7 @@ public abstract class BehaviorV3 extends Behavior {
         return totalPath;
     }
 
-    private double heuristic(Coordinate c1, Coordinate c2) {
+    protected double euclideanDistance(Coordinate c1, Coordinate c2) {
 
         return Math.sqrt(
                 (c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
@@ -134,6 +139,6 @@ public abstract class BehaviorV3 extends Behavior {
     }
 
     enum MemoryEnum {
-        ENERGY_STATIONS, LAST_MOVE;
+        ENERGY_STATIONS, LAST_MOVES;
     }
 }

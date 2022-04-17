@@ -4,7 +4,6 @@ import agent.AgentAction;
 import agent.AgentState;
 import environment.Coordinate;
 
-import java.util.Collections;
 import java.util.List;
 
 public class PacketSearchBehavior extends SearchBehavior {
@@ -15,10 +14,8 @@ public class PacketSearchBehavior extends SearchBehavior {
     }
 
     @Override
-    protected List<Coordinate> getMovesInOrder(AgentState agentState) {
+    protected List<Coordinate> getMovesInOrderRel(AgentState agentState) {
 
-        var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
-        Collections.shuffle(permittedMovesRel);
-        return permittedMovesRel;
+        return getAllPermittedMovesInRandomOrderRel(agentState);
     }
 }

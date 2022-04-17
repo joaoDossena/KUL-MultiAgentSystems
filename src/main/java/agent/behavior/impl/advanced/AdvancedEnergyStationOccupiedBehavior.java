@@ -1,15 +1,14 @@
-package agent.behavior.impl.v3;
+package agent.behavior.impl.advanced;
 
 import agent.AgentAction;
 import agent.AgentState;
-import agent.behavior.Behavior;
+import agent.behavior.impl.v3.BehaviorV3;
 import environment.Coordinate;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EnergyStationOccupiedBehavior extends BehaviorV3 {
+public class AdvancedEnergyStationOccupiedBehavior extends BehaviorV3 {
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {

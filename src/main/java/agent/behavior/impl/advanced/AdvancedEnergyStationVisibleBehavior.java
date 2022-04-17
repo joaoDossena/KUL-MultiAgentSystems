@@ -1,24 +1,33 @@
-package agent.behavior.impl.v3;
+package agent.behavior.impl.advanced;
 
 import agent.AgentAction;
 import agent.AgentState;
+import agent.behavior.impl.v3.VisibleBehavior;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.world.energystation.EnergyStation;
 
-import java.util.List;
 import java.util.Optional;
 
-public class EnergyStationVisibleBehavior extends VisibleBehavior<EnergyStation> {
+public class AdvancedEnergyStationVisibleBehavior extends VisibleBehavior<EnergyStation> {
 
     @Override
     protected Optional<CellPerception> getTarget(AgentState agentState) {
 
-        var target = agentState.getPerception().getClosestCell(
-                agentState.getPerception().getEnergyStations(),
-                agentState.getX(), agentState.getY());
+        CellPerception[][] cells = agentState.getPerception().getAllVision();
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 3; j < cells[i].length; j++) {
+                if (cells[i][j] != null && cells[i][j - 1] != null && cells[i][j - 2] != null && cells[i][j - 3] != null
+                        && cells[i][j].containsEnergyStation()
+                        && (!cells[i][j-1].containsAgent() || cells[i][j-1].getAgentRepresentation().get().getName().equals(agentState.getName()))
+                        && (!cells[i][j-2].containsAgent() || cells[i][j-2].getAgentRepresentation().get().getName().equals(agentState.getName()))
+                        && (!cells[i][j-3].containsAgent() || cells[i][j-3].getAgentRepresentation().get().getName().equals(agentState.getName()))) {
+                    return Optional.of(cells[i][j]);
+                }
+            }
+        }
 
-        return target == null ? Optional.empty() : Optional.of(target);
+        return Optional.empty();
     }
 
     @Override

@@ -6,8 +6,9 @@ import environment.Coordinate;
 import environment.Perception;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DestinationSearchBehavior extends SearchBehavior {
 
@@ -17,33 +18,22 @@ public class DestinationSearchBehavior extends SearchBehavior {
     }
 
     @Override
-    protected List<Coordinate> getMovesInOrder(AgentState agentState) {
+    protected List<Coordinate> getMovesInOrderRel(AgentState agentState) {
 
         var destinationMem = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
+
         if (destinationMem == null || destinationMem.getCoordinates() == null || destinationMem.getCoordinates().isEmpty()) {
-            var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
-            Collections.shuffle(permittedMovesRel);
-            return permittedMovesRel;
+            return getAllPermittedMovesInRandomOrderRel(agentState);
         }
 
-        var possibleNewLocations = Coordinate.of(agentState.getX(), agentState.getY()).getNeighboursAbsolute();
-        var destinationSortedCoordinates = prioritizeWithManhattan(possibleNewLocations, agentState.getPerception(), destinationMem.getCoordinates().get(0));
-        var relativeSortedCoordinates = returnListToRelative(destinationSortedCoordinates, agentState.getX(), agentState.getY());
+        var neighboursAbs = Coordinate.of(agentState.getX(), agentState.getY()).getNeighboursAbsolute();
+        var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
 
-        relativeSortedCoordinates.removeIf(c -> !agentState.getPerception().getPermittedMovesRel().contains(c));
-
-        return relativeSortedCoordinates;
+        return neighboursAbs.stream()
+                .sorted(Comparator.comparing(coordinate -> euclideanDistance(coordinate, destinationMem.getCoordinates().get(0))))
+                .map(coordinate -> Coordinate.of(coordinate.getX() - agentState.getX(), coordinate.getY() - agentState.getY()))
+                .filter(permittedMovesRel::contains)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    protected List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
-        return currPerception.shortWithManhattanDistance(possibleCurrentMoves, destinationCoordinates.getX(), destinationCoordinates.getY());
-    }
-
-    protected List<Coordinate> returnListToRelative(List<Coordinate> destinationSortedCoordinates, int x, int y) {
-        List<Coordinate> relativeCoordinates = new ArrayList<>();
-        for (Coordinate cor : destinationSortedCoordinates) {
-            relativeCoordinates.add(new Coordinate(cor.getX() - x, cor.getY() - y));
-        }
-        return relativeCoordinates;
-    }
 }

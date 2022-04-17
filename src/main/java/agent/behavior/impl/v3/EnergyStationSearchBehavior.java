@@ -6,9 +6,7 @@ import environment.CellPerception;
 import environment.Coordinate;
 import environment.world.packet.Packet;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class EnergyStationSearchBehavior extends SearchBehavior {
 
@@ -21,6 +19,13 @@ public class EnergyStationSearchBehavior extends SearchBehavior {
             return false;
         }
 
+        // Now we have the packet, so check if we see destinations and move to them
+        if(agentState.seesDestination(carry.get().getColor())) {
+            goToDestination(agentState, agentAction);
+            return true;
+        }
+
+        // Otherwise, just put the packet down
         List<Coordinate> permittedMovesRel =
                 agentState.getPerception().getPermittedMovesRel().stream()
                         .filter(coordinate -> agentState.getPerception()
@@ -40,8 +45,36 @@ public class EnergyStationSearchBehavior extends SearchBehavior {
         return true;
     }
 
+    private void goToDestination(AgentState agentState, AgentAction agentAction) {
+
+        Optional<CellPerception> optionalTarget = Arrays.stream(agentState.getPerception().getNeighbours())
+                .filter(Objects::nonNull)
+                .filter(cellPerception -> cellPerception.containsDestination(agentState.getCarry().get().getColor()))
+                .findFirst();
+
+        // Reached destination, put packet
+        if (optionalTarget.isPresent()) {
+            var cell = optionalTarget.get();
+            agentAction.putPacket(cell.getX(), cell.getY());
+            return;
+        }
+
+        // Otherwise, go towards destination
+        var target = agentState.getPerception().getClosestCell(
+                agentState.getPerception().getDestinationCells(agentState.getCarry().get().getColor()),
+                agentState.getX(), agentState.getY());
+
+        var bestMoveOpt = findBestMove(target, agentState);
+        if (bestMoveOpt.isEmpty()) {
+            agentAction.skip();
+            return;
+        }
+
+        agentAction.step(bestMoveOpt.get().getX(), bestMoveOpt.get().getY());
+    }
+
     @Override
-    protected List<Coordinate> getMovesInOrder(AgentState agentState) {
+    protected List<Coordinate> getMovesInOrderRel(AgentState agentState) {
 
         var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
 
