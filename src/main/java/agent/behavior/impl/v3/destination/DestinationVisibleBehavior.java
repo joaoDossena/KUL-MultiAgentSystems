@@ -1,8 +1,10 @@
-package agent.behavior.impl.v3;
+package agent.behavior.impl.v3.destination;
 
 import agent.AgentAction;
 import agent.AgentState;
+import agent.behavior.impl.v3.VisibleBehavior;
 import environment.CellPerception;
+import environment.world.destination.Destination;
 import environment.world.packet.Packet;
 
 import java.util.Arrays;
@@ -10,13 +12,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class PacketVisibleBehavior extends VisibleBehavior<Packet> {
+public class DestinationVisibleBehavior extends VisibleBehavior<Destination> {
 
     @Override
     protected Optional<CellPerception> getTarget(AgentState agentState) {
 
+        Optional<Packet> carry = agentState.getCarry();
+        if (carry.isEmpty()) {
+            throw new RuntimeException("Should carry when behavior is DestinationVisibleBehavior");
+        }
+
         var target = agentState.getPerception().getClosestCell(
-                agentState.getPerception().getPacketCells(),
+                agentState.getPerception().getDestinationCells(carry.get().getColor()),
                 agentState.getX(), agentState.getY());
 
         return target == null ? Optional.empty() : Optional.of(target);
@@ -25,9 +32,14 @@ public class PacketVisibleBehavior extends VisibleBehavior<Packet> {
     @Override
     protected boolean doAction(AgentState agentState, AgentAction agentAction) {
 
+        Optional<Packet> carry = agentState.getCarry();
+        if (carry.isEmpty()) {
+            throw new RuntimeException("Should carry when behavior changes to ReachedDestinationBehaviorChange");
+        }
+
         Optional<CellPerception> optionalTarget = Arrays.stream(agentState.getPerception().getNeighbours())
                 .filter(Objects::nonNull)
-                .filter(CellPerception::containsPacket)
+                .filter(cellPerception -> cellPerception.containsDestination(carry.get().getColor()))
                 .findFirst();
 
         if (optionalTarget.isEmpty()) {
@@ -36,7 +48,7 @@ public class PacketVisibleBehavior extends VisibleBehavior<Packet> {
 
         var cell = optionalTarget.get();
 
-        agentAction.pickPacket(cell.getX(), cell.getY());
+        agentAction.putPacket(cell.getX(), cell.getY());
         return true;
     }
 }

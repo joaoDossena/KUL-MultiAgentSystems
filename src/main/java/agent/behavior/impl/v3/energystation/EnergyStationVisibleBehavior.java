@@ -1,7 +1,8 @@
-package agent.behavior.impl.v3;
+package agent.behavior.impl.v3.energystation;
 
 import agent.AgentAction;
 import agent.AgentState;
+import agent.behavior.impl.v3.VisibleBehavior;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.world.energystation.EnergyStation;

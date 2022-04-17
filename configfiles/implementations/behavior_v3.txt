@@ -3,22 +3,22 @@ description "Implementation for three different abstract behaviors. Action, Visi
 
 nbStates 6
 
-1 agent.behavior.impl.v3.PacketSearchBehavior
+1 agent.behavior.impl.v3.packet.PacketSearchBehavior
 nbArgs 0
 
-2 agent.behavior.impl.v3.PacketVisibleBehavior
+2 agent.behavior.impl.v3.packet.PacketVisibleBehavior
 nbArgs 0
 
-3 agent.behavior.impl.v3.DestinationSearchBehavior
+3 agent.behavior.impl.v3.destination.DestinationSearchBehavior
 nbArgs 0
 
-4 agent.behavior.impl.v3.DestinationVisibleBehavior
+4 agent.behavior.impl.v3.destination.DestinationVisibleBehavior
 nbArgs 0
 
-5 agent.behavior.impl.v3.EnergyStationSearchBehavior
+5 agent.behavior.impl.v3.energystation.EnergyStationSearchBehavior
 nbArgs 0
 
-6 agent.behavior.impl.v3.EnergyStationVisibleBehavior
+6 agent.behavior.impl.v3.energystation.EnergyStationVisibleBehavior
 nbArgs 0
 
 

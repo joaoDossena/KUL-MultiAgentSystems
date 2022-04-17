@@ -4,6 +4,7 @@ import agent.AgentCommunication;
 import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
+import agent.behavior.impl.v3.energystation.EnergyStationVisibleBehavior;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
@@ -27,13 +28,11 @@ public abstract class BehaviorV3 extends Behavior {
     protected List<Coordinate> getAllPermittedMovesInRandomOrderRel(AgentState agentState) {
 
         var permittedMovesRel = agentState.getPerception().getPermittedMovesRel();
-
         Collections.shuffle(permittedMovesRel);
-
         return permittedMovesRel;
     }
 
-    protected List<Coordinate> getPermittedMovesAbs(Coordinate coordinate, Perception perception) {
+    protected List<Coordinate> getWalkableNeighbours(Coordinate coordinate, Perception perception) {
 
         return coordinate.getNeighboursAbsolute().stream()
                 .filter(neighbour -> perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()) != null)
@@ -111,7 +110,7 @@ public abstract class BehaviorV3 extends Behavior {
 
             openSet.remove(current);
 
-            List<Coordinate> permittedMoves = getPermittedMovesAbs(current, agentState.getPerception());
+            List<Coordinate> permittedMoves = getWalkableNeighbours(current, agentState.getPerception());
             for (Coordinate neighbour : permittedMoves) {
 
                 var tentative_gScore = gScore.get(current) + 1;

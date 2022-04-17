@@ -14,7 +14,6 @@ public abstract class VisibleBehavior<T extends Item<?>> extends BehaviorV3 {
 
     protected abstract boolean doAction(AgentState agentState, AgentAction agentAction);
 
-
     @Override
     public final void act(AgentState agentState, AgentAction agentAction) {
 
