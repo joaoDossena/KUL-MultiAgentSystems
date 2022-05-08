@@ -93,6 +93,11 @@ public class CellPerception {
         return this.getRepOfType(PacketRep.class) != null;
     }
 
+    public boolean containsPacketOfColor(Color color) {
+        return this.containsPacket() &&
+                this.getRepOfType(PacketRep.class).getColor().equals(color);
+    }
+
     /**
      * Check if this cell perception has a wall in it.
      * @return True if a wall is present in this cell perception, false otherwise.

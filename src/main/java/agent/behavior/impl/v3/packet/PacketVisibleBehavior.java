@@ -19,8 +19,13 @@ public class PacketVisibleBehavior extends VisibleBehavior<Packet> {
         var target = agentState.getPerception().getClosestCell(
                 agentState.getPerception().getPacketCells(),
                 agentState.getX(), agentState.getY());
+        if(target == null) return Optional.empty();
 
-        return target == null ? Optional.empty() : Optional.of(target);
+        if(agentState.getColor().isPresent() &&
+                !target.containsPacketOfColor(agentState.getColor().get()))
+            return Optional.empty();
+
+        return Optional.of(target);
     }
 
     @Override
@@ -36,6 +41,10 @@ public class PacketVisibleBehavior extends VisibleBehavior<Packet> {
         }
 
         var cell = optionalTarget.get();
+
+        if(agentState.getColor().isPresent() &&
+                !cell.containsPacketOfColor(agentState.getColor().get()))
+            return false;
 
         agentAction.pickPacket(cell.getX(), cell.getY());
         return true;
