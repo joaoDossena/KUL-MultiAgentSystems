@@ -551,7 +551,6 @@ public class Perception {
     }
 
 
-
     public CellPerception[][] getAllVision() {
         return cells;
     }
@@ -566,6 +565,31 @@ public class Perception {
             }
         }
         return agentReps;
+    }
+
+    public List<Coordinate> getWalkableNeighbours(Coordinate c) {
+        return c.getNeighboursAbsolute().stream()
+                .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()) != null)
+                .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).isWalkable())
+                .filter(neighbour -> !getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).containsAgent())
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public boolean isNeighbour(Coordinate c1, Coordinate c2) {
+        return Math.abs(c1.getX() - c2.getX()) <= 1 && Math.abs(c1.getY() - c2.getY()) <= 1;
+    }
+
+    public boolean isReachable(Coordinate from, Coordinate to) {
+        if(getCellAt(to.getX(), to.getY()) == null) return false;
+        if(isNeighbour(from, to)) return true;
+
+        List<Coordinate> walkableNeighbours = getWalkableNeighbours(to);
+        if(walkableNeighbours.isEmpty()) return false;
+
+        for(Coordinate neighbour : walkableNeighbours) {
+            if(isReachable(from, neighbour)) return true;
+        }
+        return false;
     }
 }
 
