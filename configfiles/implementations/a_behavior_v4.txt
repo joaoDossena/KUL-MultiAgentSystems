@@ -1,0 +1,75 @@
+description "TODO change later "
+
+
+nbStates 6
+
+1 agent.behavior.impl.v4.destination.SpreadPacketsCloseToDestinationBehavior
+nbArgs 0
+
+2 agent.behavior.impl.v4.packet.PacketVisibleBehavior
+nbArgs 0
+
+3 agent.behavior.impl.v4.destination.DestinationSearchBehavior
+nbArgs 0
+
+4 agent.behavior.impl.v4.destination.DestinationVisibleBehavior
+nbArgs 0
+
+5 agent.behavior.impl.v4.packet.FindPacketButDestinationUnreachable
+nbArgs 0
+
+6 agent.behavior.impl.v4.packet.PacketSearchBehavior
+nbArgs 0
+
+
+
+nbChanges 6
+
+agent.behavior.impl.v4.change.DetectedPacketBehaviorChange
+nbArgs 0
+priority 0
+source 6
+target 2
+
+agent.behavior.impl.v4.change.PickedPacketBehaviorChange
+nbArgs 0
+priority 0
+source 2
+target 3
+
+agent.behavior.impl.v4.change.DetectedDestinationBehaviorChange
+nbArgs 0
+priority 0
+source 3
+target 4
+
+agent.behavior.impl.v4.change.PutPacketBehaviorChange
+nbArgs 0
+priority 0
+source 4
+target 6
+
+
+agent.behavior.impl.v4.change.PickedPacketUnreachableBehaviorChange
+nbArgs 0
+priority 0
+source 5
+target 1
+
+agent.behavior.impl.v4.change.PutPacketUnreachableBehaviorChange
+nbArgs 0
+priority 1
+source 1
+target 5
+
+agent.behavior.impl.v4.change.DetectedDestinationBehaviorChange
+nbArgs 0
+priority 0
+source 1
+target 4
+
+agent.behavior.impl.v4.change.PutPacketBehaviorChange
+nbArgs 0
+priority 0
+source 5
+target 6

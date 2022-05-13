@@ -4,7 +4,7 @@ import agent.AgentCommunication;
 import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
-import agent.behavior.impl.v4.energystation.EnergyStationVisibleBehavior;
+import agent.behavior.impl.v3.energystation.EnergyStationVisibleBehavior;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
@@ -76,12 +76,8 @@ public abstract class BehaviorV3 extends Behavior {
 
     private List<Coordinate> aStar(CellPerception targetCell, AgentState agentState) {
 
-        Coordinate goal;
-        if (this instanceof EnergyStationVisibleBehavior) {
-            goal = Coordinate.of(targetCell.getX(), targetCell.getY() - 1);
-        } else {
-            goal = Coordinate.of(targetCell.getX(), targetCell.getY());
-        }
+        Coordinate goal = Coordinate.of(targetCell.getX(), targetCell.getY());
+
 
         Coordinate start = Coordinate.of(agentState.getX(), agentState.getY());
 

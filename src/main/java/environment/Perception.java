@@ -591,5 +591,13 @@ public class Perception {
         }
         return false;
     }
+
+    public boolean hasNoNeighbouringPacket( List<Coordinate> neighbours) {
+        for(Coordinate neighbor:neighbours){
+            if(getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY())!=null && getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY()).containsPacket())
+                return false;
+        }
+        return true;
+    }
 }
 

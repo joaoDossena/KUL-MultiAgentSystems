@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static agent.behavior.impl.v3.BehaviorV3.MemoryEnum.LAST_MOVES;
+import static agent.behavior.impl.v4.BehaviorV3.MemoryEnum.LAST_MOVES;
 
 public abstract class SearchBehavior extends BehaviorV3 {
 

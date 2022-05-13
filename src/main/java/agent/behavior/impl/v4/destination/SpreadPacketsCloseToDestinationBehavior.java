@@ -29,22 +29,23 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
         var destinationMem = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
         if ( destinationMem!=null){
             var destinationCoordinate = destinationMem.getCoordinates().get(0);
-            if(Environment.chebyshevDistance(destinationCoordinate,new Coordinate(agentState.getX(),agentState.getY()))>8){
-                super.act(agentState,agentAction);
-            }
-            else
-            {
-                var PossibleCoordinatesForPackage=generateAllMovesFromCoordinate(new Coordinate(agentState.getX(),agentState.getY()));
-                var PackageCoordinate = findBestNewLocation(PossibleCoordinatesForPackage,destinationCoordinate,agentState.getPerception());
+            if (Environment.chebyshevDistance(destinationCoordinate, new Coordinate(agentState.getX(), agentState.getY())) <= 8) {
+                var PossibleCoordinatesForPackage = generateAllMovesFromCoordinate(new Coordinate(agentState.getX(), agentState.getY()));
+                var packageCoordinate = findBestNewLocation(PossibleCoordinatesForPackage, destinationCoordinate, agentState.getPerception());
+                if (packageCoordinate != null) {
+                    agentAction.putPacket(packageCoordinate.getX(), packageCoordinate.getY());
+                    return;
+                }
             }
         }
+        super.act(agentState,agentAction);
     }
 
     private Coordinate findBestNewLocation(List<Coordinate> possibleCoordinatesForPackage, Coordinate destinationCoordinate, Perception perception) {
         var sortedCoordinates = prioritizeWithManhattan(possibleCoordinatesForPackage,perception,destinationCoordinate);
         for( Coordinate coor : sortedCoordinates){
             if(perception.getCellPerceptionOnAbsPos(coor.getX(),coor.getY()).isWalkable())
-                if(coor.hasNoNeighbouringPacket(perception,coor)) return coor;
+                if(perception.hasNoNeighbouringPacket(generateAllMovesFromCoordinate(coor))) return coor;
         }
         return null;
     }
