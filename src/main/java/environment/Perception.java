@@ -697,5 +697,12 @@ public class Perception {
         }
         return totalPath;
     }
+
+    protected double euclideanDistance(Coordinate c1, Coordinate c2) {
+
+        return Math.sqrt(
+                (c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
+                        + (c1.getY() - c2.getY()) * (c1.getY() - c2.getY()));
+    }
 }
 
