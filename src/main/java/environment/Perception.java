@@ -594,18 +594,19 @@ public class Perception {
         return Math.abs(c1.getX() - c2.getX()) <= 1 && Math.abs(c1.getY() - c2.getY()) <= 1;
     }
 
-    public boolean isReachable(Coordinate from, Coordinate to) {
-        if(getCellAt(to.getX(), to.getY()) == null) return false;
-        if(isNeighbour(from, to)) return true;
+    public Optional<Coordinate> isReachable(Coordinate from, Coordinate to) {
+        if(getCellAt(to.getX(), to.getY()) == null) return Optional.empty();
+        if(isNeighbour(from, to)) throw new RuntimeException("Perception::isReachable: Neighbour is obviously reachable");
 
         List<Coordinate> moves = aStar(from, getCellAt(to.getX(), to.getY()));
-        return !moves.isEmpty();
+        return moves.stream().findFirst();
     }
 
     public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket,Coordinate packetCoor,Coordinate agentCoor, Coordinate destinationCoor){
         //packet touch other Packet(s) and it is reachable
         //packet is far from Destination and it is reachable
-        return (isReachable(agentCoor,packetCoor)&& (!hasNoNeighbouringPacket(neighboursOfPacket) ||Environment.chebyshevDistance(packetCoor,destinationCoor)>6));
+        return (isReachable(agentCoor,packetCoor).isPresent() &&
+                (!hasNoNeighbouringPacket(neighboursOfPacket) || Environment.chebyshevDistance(packetCoor,destinationCoor)>6));
     }
 
     public Coordinate getShortestMoveToCell(CellPerception cell, List<Coordinate> moves, int agentX, int agentY) {
