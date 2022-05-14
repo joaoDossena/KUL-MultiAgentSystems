@@ -21,7 +21,7 @@ public class FindPacketButDestinationUnreachable extends Wander {
         var destinationMem = agentState.getMemoryFragment(agentState.getColor().get().toString());
         if (destinationMem != null) {
             recordIsDestinationReachable(agentState, destinationMem);
-
+            //Hasmap to contain list of Coordinates (Empty list in edge cases)
             HashMap<CellPerception, Coordinate> problematicPackets = getProblematicPackets(agentState);
 
             for(var probPacket : problematicPackets.keySet()){
@@ -32,6 +32,7 @@ public class FindPacketButDestinationUnreachable extends Wander {
             }
 
             for(var probPacket : problematicPackets.keySet()){
+                //sort by lists length
                 agentAction.step(problematicPackets.get(probPacket).getX(), problematicPackets.get(probPacket).getY());
                 return;
             }

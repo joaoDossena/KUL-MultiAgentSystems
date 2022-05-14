@@ -6,6 +6,7 @@ import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
 import agent.behavior.impl.wander.BetterWander;
+import agent.behavior.impl.wander.Wander;
 import environment.Coordinate;
 import environment.Perception;
 import environment.world.packet.Packet;
@@ -14,7 +15,7 @@ import environment.Environment;
 import java.util.List;
 import java.util.Optional;
 
-public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
+public class SpreadPacketsCloseToDestinationBehavior extends Wander {
 
     @Override
     public void communicate(AgentState agentState, AgentCommunication agentCommunication) {
@@ -24,7 +25,7 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
         var destination=agentState.getPerception().getDestinationCells(agentState.getColor().get());
-        if(destination!=null) {
+        if(destination!=null&&!destination.isEmpty()) {
             agentState.addMemoryFragment(agentState.getColor().toString(), new AgentMemoryFragment(destination.get(0).getCoordinate()));
         }
         Optional<Packet> carry = agentState.getCarry();
@@ -36,16 +37,12 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
             var reachableDestMem = agentState.getMemoryFragment("isDestinationReachable");
             if(reachableDestMem == null || !reachableDestMem.getReachable()){
                 Optional<Coordinate> reachableCoord = agentState.getPerception().isReachable(new Coordinate(agentState.getX(),agentState.getY()), destinationMem.getCoordinate());
-                if(reachableCoord.isPresent())
-                    agentState.addMemoryFragment("isDestinationReachable", new AgentMemoryFragment(reachableCoord.get()));
-                else throw new RuntimeException("SpreadPacketsCloseToDestinationBehavior: Trying to add destination to memory when it is unreachable");
+                agentState.addMemoryFragment("isDestinationReachable", new AgentMemoryFragment(reachableCoord.isPresent()));
             }
-            var destinationCoordinate = destinationMem.getCoordinate();
-            if (Environment.chebyshevDistance(destinationCoordinate, new Coordinate(agentState.getX(), agentState.getY())) <= 8) {
-                var PossibleCoordinatesForPackage = generateAllMovesFromCoordinate(new Coordinate(agentState.getX(), agentState.getY()));
-                var packageCoordinate = findBestNewLocation(PossibleCoordinatesForPackage, destinationCoordinate, agentState.getPerception());
-                if (packageCoordinate != null) {
-                    agentAction.putPacket(packageCoordinate.getX(), packageCoordinate.getY());
+            var possiblePackagePotitions= generateAllMovesFromCoordinate(new Coordinate(agentState.getX(),agentState.getY()));
+            for (Coordinate coor : possiblePackagePotitions) {
+                if (isOkayToPlacePacket(agentState,coor)) {
+                    agentAction.putPacket(coor.getX(), coor.getY());
                     return;
                 }
             }
@@ -53,13 +50,12 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
         super.act(agentState,agentAction);
     }
 
-    private Coordinate findBestNewLocation(List<Coordinate> possibleCoordinatesForPackage, Coordinate destinationCoordinate, Perception perception) {
-        var sortedCoordinates = prioritizeWithManhattan(possibleCoordinatesForPackage,perception,destinationCoordinate);
-        for( Coordinate coor : sortedCoordinates){
-            if(perception.getCellPerceptionOnAbsPos(coor.getX(),coor.getY()).isWalkable())
-                if(perception.hasNoBlockingNeighbour(generateAllMovesFromCoordinate(coor))) return coor;
-        }
-        return null;
+    public boolean isOkayToPlacePacket(AgentState agentState,Coordinate coor){
+        return agentState.getPerception().getCellPerceptionOnAbsPos(coor.getX(),coor.getY())!=null&&
+                agentState.getPerception().getCellPerceptionOnAbsPos(coor.getX(),coor.getY()).isWalkable()&&
+                agentState.getPerception().hasNoBlockingNeighbour(generateAllMovesFromCoordinate(coor));
     }
+
+
 
 }
