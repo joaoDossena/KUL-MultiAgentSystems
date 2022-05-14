@@ -80,6 +80,11 @@ public class CellPerception {
         return null;
     }
 
+    public Coordinate toCoordinate(){
+        return new Coordinate(getX(),getY());
+    }
+
+
 
     /**
      * Check if this cell perception has a packet in it.

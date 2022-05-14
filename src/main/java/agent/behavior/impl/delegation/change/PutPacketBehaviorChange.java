@@ -1,8 +1,8 @@
-package agent.behavior.impl.first.change;
+package agent.behavior.impl.delegation.change;
 
 import agent.behavior.BehaviorChange;
 
-public class PickedPacketBehaviorChange extends BehaviorChange {
+public class PutPacketBehaviorChange extends BehaviorChange {
 
     private boolean hasPacket = false;
 
@@ -13,6 +13,6 @@ public class PickedPacketBehaviorChange extends BehaviorChange {
 
     @Override
     public boolean isSatisfied() {
-        return this.hasPacket;
+        return !this.hasPacket;
     }
 }
