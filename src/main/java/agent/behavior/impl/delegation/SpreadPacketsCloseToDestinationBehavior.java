@@ -28,7 +28,7 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
         }
         var destinationMem = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
         if ( destinationMem!=null){
-            var destinationCoordinate = destinationMem.getCoordinates().get(0);
+            var destinationCoordinate = destinationMem.getCoordinate();
             if (Environment.chebyshevDistance(destinationCoordinate, new Coordinate(agentState.getX(), agentState.getY())) <= 8) {
                 var PossibleCoordinatesForPackage = generateAllMovesFromCoordinate(new Coordinate(agentState.getX(), agentState.getY()));
                 var packageCoordinate = findBestNewLocation(PossibleCoordinatesForPackage, destinationCoordinate, agentState.getPerception());
