@@ -705,5 +705,18 @@ public class Perception {
                 (c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
                         + (c1.getY() - c2.getY()) * (c1.getY() - c2.getY()));
     }
+
+    public Coordinate getClosestToCoordinate(Coordinate destCoordinate) {
+        double distance=Double.MAX_VALUE;
+        CellPerception nearestCell=null;
+        for(CellPerception[] cellsOfLine : cells)
+            for(CellPerception cell:cellsOfLine){
+                if(euclideanDistance(cell.toCoordinate(),destCoordinate)<distance){
+                    distance=euclideanDistance(cell.toCoordinate(),destCoordinate);
+                    nearestCell=cell;
+                }
+            }
+        return nearestCell.toCoordinate();
+    }
 }
 
