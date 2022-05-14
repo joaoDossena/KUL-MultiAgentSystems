@@ -1,5 +1,7 @@
 package environment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -78,6 +80,34 @@ public class Coordinate extends Pair<Integer, Integer> {
 
         return casted.getY() == getY();
     }
+
+
+    public List<Coordinate> getNeighboursAbsolute() {
+
+        List<Coordinate> neighbours = new ArrayList<>();
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x == 0 && y == 0)
+                    continue;
+                neighbours.add(new Coordinate(getX() + x, getY() + y));
+            }
+        }
+        return neighbours;
+    }
+
+    public static List<Coordinate> getNeighboursRelative() {
+
+        List<Coordinate> neighbours = new ArrayList<>();
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x == 0 && y == 0)
+                    continue;
+                neighbours.add(new Coordinate(x, y));
+            }
+        }
+        return neighbours;
+    }
+
 
     @Override
     public int hashCode() {
