@@ -594,18 +594,22 @@ public class Perception {
         return Math.abs(c1.getX() - c2.getX()) <= 1 && Math.abs(c1.getY() - c2.getY()) <= 1;
     }
 
-    public Optional<Coordinate> isReachable(Coordinate from, Coordinate to) {
-        if(getCellPerceptionOnAbsPos(to.getX(), to.getY()) == null) return Optional.empty();
-        if(isNeighbour(from, to)) return Optional.of(to);
-        List<Coordinate> moves = aStar(from, getCellPerceptionOnAbsPos(to.getX(), to.getY()));
-        if(moves.isEmpty()) return Optional.empty();
-        return Optional.of(moves.get(1));
+    public List<Coordinate> isReachable(Coordinate from, Coordinate to) {
+        List<Coordinate> moves = new ArrayList<>(Collections.emptyList());
+        if(getCellPerceptionOnAbsPos(to.getX(), to.getY()) == null) return moves;
+        if(isNeighbour(from, to)){
+            moves.add(to);
+            return moves;
+        }
+        moves = aStar(from, getCellPerceptionOnAbsPos(to.getX(), to.getY()));
+        if(moves.isEmpty()) return moves;
+        return moves;
     }
 
-    public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket, Optional<Coordinate> reachable){
+    public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket, List<Coordinate> reachable){
         //packet touch other Packet(s) and it is reachable
         //packet is far from Destination and it is reachable
-        return (reachable.isPresent() &&
+        return (!reachable.isEmpty() &&
                 (!hasNoBlockingNeighbour(neighboursOfPacket) ));
     }
 
