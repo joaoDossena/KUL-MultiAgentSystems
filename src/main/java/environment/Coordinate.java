@@ -12,6 +12,9 @@ import util.Pair;
  */
 public class Coordinate extends Pair<Integer, Integer> {
 
+    public static Coordinate of(int x, int y) {
+        return new Coordinate(x, y);
+    }
     public Coordinate(int x, int y) {
         super(x, y);
     }
