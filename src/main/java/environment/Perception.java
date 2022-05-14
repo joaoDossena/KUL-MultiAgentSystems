@@ -641,7 +641,7 @@ public class Perception {
         return true;
     }
 
-    private List<Coordinate> aStar(Coordinate from, CellPerception targetCell) {
+    public List<Coordinate> aStar(Coordinate from, CellPerception targetCell) {
 
         Coordinate goal;
         goal = Coordinate.of(targetCell.getX(), targetCell.getY());
