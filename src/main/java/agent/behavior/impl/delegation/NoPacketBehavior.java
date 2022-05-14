@@ -26,8 +26,10 @@ public class NoPacketBehavior extends Wander {
             }
         }
 
-        walkTowardsClosestPacket(agentState, agentAction);
+//        walkTowardsClosestPacket(agentState, agentAction);
+        moveUsingAStar(agentState, agentAction);
     }
+
 
     private void walkTowardsClosestPacket(AgentState agentState, AgentAction agentAction) {
         Perception perception = agentState.getPerception();
@@ -54,5 +56,26 @@ public class NoPacketBehavior extends Wander {
 
         agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(minMove.getX(), minMove.getY())));
         agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());
+    }
+
+    private void moveUsingAStar(AgentState agentState, AgentAction agentAction) {
+        Perception perception = agentState.getPerception();
+        List<CellPerception> visiblePackets = perception.getPacketCellsForColor(agentState.getColor().get());
+        Coordinate agentCoord = new Coordinate(agentState.getX(), agentState.getY());
+
+        if(!visiblePackets.isEmpty()) {
+            CellPerception packet = visiblePackets.get(0);
+            List<Coordinate> path = perception.aStar(agentCoord, packet);
+            if(path.isEmpty()) {
+                System.out.println("NoPacketBehaviour::moveUsingAStar: empty path");
+            }
+            else{
+                Coordinate step = path.get(1);
+                agentAction.step(step.getX(), step.getY());
+                return;
+            }
+        }
+
+        super.act(agentState, agentAction);
     }
 }
