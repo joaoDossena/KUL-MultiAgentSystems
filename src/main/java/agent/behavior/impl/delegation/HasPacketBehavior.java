@@ -51,7 +51,7 @@ public class HasPacketBehavior extends Wander {
     }
 
     private List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
-        return currPerception.shortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
+        return currPerception.sortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
     }
 
     private void walkTowardsClosestDestination(AgentState agentState, AgentAction agentAction) {

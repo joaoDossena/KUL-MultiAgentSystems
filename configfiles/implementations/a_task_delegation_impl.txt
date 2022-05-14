@@ -1,0 +1,59 @@
+description "Delegate tasks based behavior. Implementation of different behaviors."
+
+
+nbStates 4
+
+1 agent.behavior.impl.delegation.FindPacketButDestinationUnreachable
+nbArgs 0
+
+2 agent.behavior.impl.delegation.HasPacketBehavior
+nbArgs 0
+
+3 agent.behavior.impl.delegation.SpreadPacketsCloseToDestinationBehavior
+nbArgs 0
+
+4 agent.behavior.impl.delegation.NoPacketBehavior
+nbArgs 0
+
+nbChanges 6
+
+# delegation change, from behavior with ID 1 to behavior with ID 2
+
+agent.behavior.impl.delegation.change.PickedPacketBehaviorChange
+nbArgs 0      # The constructor of PickedPacketBehaviorChange takes 0 args
+priority 0    # Higher value −> higher priority (in case of multiple satisfied change conditions from current behavior state)
+source 4      # ID of starting behavior
+target 2      # ID of resulting behavior
+
+agent.behavior.impl.delegation.change.PutPacketBehaviorChange
+nbArgs 0
+priority 0
+source 2
+target 4
+
+agent.behavior.impl.delegation.change.PickedPacketUnreachableBehaviorChange
+nbArgs 0
+priority 0
+source 1
+target 3
+
+agent.behavior.impl.delegation.change.PutPacketBehaviorChange
+nbArgs 0
+priority 0
+source 3
+target 1
+
+agent.behavior.impl.delegation.change.DestinationBecameReachableBehaviorChange
+nbArgs 0
+priority 0
+source 1
+target 4
+
+agent.behavior.impl.delegation.change.DestinationBecameReachableBehaviorChange
+nbArgs 0
+priority 0
+source 3
+target 2
+
+
+

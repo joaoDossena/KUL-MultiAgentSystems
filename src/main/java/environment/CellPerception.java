@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import agent.AgentMemoryFragment;
 import environment.world.agent.AgentRep;
 import environment.world.crumb.CrumbRep;
 import environment.world.destination.DestinationRep;
@@ -255,5 +256,9 @@ public class CellPerception {
 
     public int getY() {
         return this.y;
+    }
+
+    public Coordinate getCoordinate() {
+        return new Coordinate(getX(),getY());
     }
 }
