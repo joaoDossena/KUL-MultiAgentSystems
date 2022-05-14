@@ -580,8 +580,9 @@ public class Perception {
         return agentReps;
     }
 
-    public List<Coordinate> getWalkableNeighbours(Coordinate c) {
-        return c.getNeighboursAbsolute().stream()
+    protected List<Coordinate> getWalkableNeighbours(Coordinate coordinate) {
+
+        return coordinate.getNeighboursAbsolute().stream()
                 .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()) != null)
                 .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).isWalkable())
                 .filter(neighbour -> !getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).containsAgent())
@@ -636,13 +637,13 @@ public class Perception {
         return true;
     }
 
-    private List<Coordinate> aStar(CellPerception targetCell, AgentState agentState) {
+    private List<Coordinate> aStar(Coordinate from, CellPerception targetCell) {
 
         Coordinate goal;
         goal = Coordinate.of(targetCell.getX(), targetCell.getY());
 
 
-        Coordinate start = Coordinate.of(agentState.getX(), agentState.getY());
+        Coordinate start = Coordinate.of(from.getX(), from.getY());
 
         Set<Coordinate> openSet = new HashSet<>();
         openSet.add(start);
@@ -669,7 +670,7 @@ public class Perception {
 
             openSet.remove(current);
 
-            List<Coordinate> permittedMoves = getWalkableNeighbours(current, agentState.getPerception());
+            List<Coordinate> permittedMoves = getWalkableNeighbours(current);
             for (Coordinate neighbour : permittedMoves) {
 
                 var tentative_gScore = gScore.get(current) + 1;
