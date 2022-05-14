@@ -126,6 +126,8 @@ public class HasPacketBehavior extends Wander {
             }
             else{
                 Coordinate step = path.get(1);
+                Coordinate lastMoveRelativeCoord = perception.getMoveFromAbsPositions(agentCoord, step);
+                agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(lastMoveRelativeCoord));
                 agentAction.step(step.getX(), step.getY());
                 return;
             }

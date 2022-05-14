@@ -705,5 +705,9 @@ public class Perception {
                 (c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
                         + (c1.getY() - c2.getY()) * (c1.getY() - c2.getY()));
     }
+
+    public Coordinate getMoveFromAbsPositions(Coordinate from, Coordinate to){
+        return new Coordinate(to.getX() - from.getX(), to.getY() - from.getY());
+    }
 }
 
