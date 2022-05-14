@@ -20,7 +20,7 @@ public class NoPacketBehavior extends Wander {
         var neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){
-            if(neighbor != null && neighbor.containsPacket()){
+            if(neighbor != null && neighbor.containsPacketOfColor(agentState.getColor().get())){
                 agentAction.pickPacket(neighbor.getX(), neighbor.getY());
                 return;
             }
@@ -31,7 +31,7 @@ public class NoPacketBehavior extends Wander {
 
     private void walkTowardsClosestPacket(AgentState agentState, AgentAction agentAction) {
         Perception perception = agentState.getPerception();
-        List<CellPerception> packets = perception.getPacketCells();
+        List<CellPerception> packets = perception.getPacketCellsForColor(agentState.getColor().get());
 
         // If no packets in perception, wander randomly.
         if(packets.isEmpty()){
