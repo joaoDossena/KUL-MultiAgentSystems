@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import agent.AgentState;
 import environment.world.agent.AgentRep;
 import gui.video.ItemDrawer.LinePoints;
 
@@ -633,6 +634,71 @@ public class Perception {
                 return false;
         }
         return true;
+    }
+
+    private List<Coordinate> aStar(CellPerception targetCell, AgentState agentState) {
+
+        Coordinate goal;
+        goal = Coordinate.of(targetCell.getX(), targetCell.getY());
+
+
+        Coordinate start = Coordinate.of(agentState.getX(), agentState.getY());
+
+        Set<Coordinate> openSet = new HashSet<>();
+        openSet.add(start);
+
+        Map<Coordinate, Coordinate> cameFrom = new HashMap<>();
+
+        Map<Coordinate, Integer> gScore = new HashMap<>();
+        gScore.put(start, 0);
+
+        Map<Coordinate, Double> fScore = new HashMap<>();
+        fScore.put(start, euclideanDistance(start, goal));
+
+        while (!openSet.isEmpty()) {
+
+            Coordinate current = openSet.stream().min(Comparator.comparing(fScore::get)).get();
+
+            List<Coordinate> allNeighborsAbs = current.getNeighboursAbsolute();
+            for (Coordinate neighbour : allNeighborsAbs) {
+                if (neighbour.equals(goal)) {
+                    cameFrom.put(neighbour, current);
+                    return reconstructPath(cameFrom, neighbour);
+                }
+            }
+
+            openSet.remove(current);
+
+            List<Coordinate> permittedMoves = getWalkableNeighbours(current, agentState.getPerception());
+            for (Coordinate neighbour : permittedMoves) {
+
+                var tentative_gScore = gScore.get(current) + 1;
+                if (!gScore.containsKey(neighbour) || tentative_gScore < gScore.get(neighbour)) {
+                    cameFrom.put(neighbour, current);
+                    gScore.put(neighbour, tentative_gScore);
+                    fScore.put(neighbour, tentative_gScore + euclideanDistance(neighbour, goal));
+                    openSet.add(neighbour);
+                }
+            }
+        }
+        return List.of();
+    }
+
+    private List<Coordinate> reconstructPath(Map<Coordinate, Coordinate> cameFrom, Coordinate current) {
+        List<Coordinate> totalPath = new ArrayList<>();
+        totalPath.add(current);
+        while (cameFrom.containsKey(current)) {
+            current = cameFrom.get(current);
+            totalPath.add(0, current);
+        }
+        return totalPath;
+    }
+
+    protected double euclideanDistance(Coordinate c1, Coordinate c2) {
+
+        return Math.sqrt(
+                (c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
+                        + (c1.getY() - c2.getY()) * (c1.getY() - c2.getY()));
     }
 }
 
