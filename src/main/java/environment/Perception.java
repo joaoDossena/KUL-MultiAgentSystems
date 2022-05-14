@@ -595,13 +595,8 @@ public class Perception {
         if(getCellAt(to.getX(), to.getY()) == null) return false;
         if(isNeighbour(from, to)) return true;
 
-        List<Coordinate> walkableNeighbours = getWalkableNeighbours(to);
-        if(walkableNeighbours.isEmpty()) return false;
-
-        for(Coordinate neighbour : walkableNeighbours) {
-            if(isReachable(from, neighbour)) return true;
-        }
-        return false;
+        List<Coordinate> moves = aStar(from, getCellAt(to.getX(), to.getY()));
+        return !moves.isEmpty();
     }
 
     public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket,Coordinate packetCoor,Coordinate agentCoor, Coordinate destinationCoor){
@@ -633,7 +628,8 @@ public class Perception {
 
     public boolean hasNoNeighbouringPacket( List<Coordinate> neighbours) {
         for(Coordinate neighbor:neighbours){
-            if(getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY())!=null && getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY()).containsPacket())
+            if(getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY()) != null &&
+                    getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY()).containsPacket())
                 return false;
         }
         return true;
