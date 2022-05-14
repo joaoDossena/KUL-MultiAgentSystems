@@ -36,8 +36,8 @@ public class SpreadPacketsCloseToDestinationBehavior extends Wander {
         if (destinationMem!=null){
             var reachableDestMem = agentState.getMemoryFragment("isDestinationReachable");
             if(reachableDestMem == null || !reachableDestMem.getReachable()){
-                Optional<Coordinate> reachableCoord = agentState.getPerception().isReachable(new Coordinate(agentState.getX(),agentState.getY()), destinationMem.getCoordinate());
-                agentState.addMemoryFragment("isDestinationReachable", new AgentMemoryFragment(reachableCoord.isPresent()));
+                var reachableCoord = agentState.getPerception().isReachable(new Coordinate(agentState.getX(),agentState.getY()), destinationMem.getCoordinate());
+                agentState.addMemoryFragment("isDestinationReachable", new AgentMemoryFragment(!reachableCoord.isEmpty()));
             }
             var possiblePackagePotitions= generateAllMovesFromCoordinate(new Coordinate(agentState.getX(),agentState.getY()));
             for (Coordinate coor : possiblePackagePotitions) {
