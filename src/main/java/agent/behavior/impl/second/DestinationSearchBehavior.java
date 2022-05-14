@@ -7,7 +7,6 @@ import environment.Coordinate;
 import environment.Perception;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class DestinationSearchBehavior extends SearchBehavior {
@@ -69,7 +68,7 @@ public class DestinationSearchBehavior extends SearchBehavior {
     }
 
     private List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
-        return currPerception.shortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
+        return currPerception.sortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
     }
 
 

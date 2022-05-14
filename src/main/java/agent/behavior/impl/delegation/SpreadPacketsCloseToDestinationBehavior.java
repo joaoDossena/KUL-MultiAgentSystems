@@ -2,6 +2,7 @@ package agent.behavior.impl.delegation;
 
 import agent.AgentAction;
 import agent.AgentCommunication;
+import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
 import agent.behavior.impl.wander.BetterWander;
@@ -22,12 +23,20 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
+        var destination=agentState.getPerception().getDestinationCells(agentState.getColor().get());
+        if(destination!=null) {
+            agentState.addMemoryFragment(agentState.getColor().toString(), new AgentMemoryFragment(destination.get(0).getCoordinate()));
+        }
         Optional<Packet> carry = agentState.getCarry();
         if (carry.isEmpty()) {
             throw new RuntimeException("Should carry when behavior is SpreadPacketsCloseToDestinationBehavior");
         }
-        var destinationMem = agentState.getMemoryFragment(agentState.getCarry().get().getColor().toString());
+        var destinationMem = agentState.getMemoryFragment(agentState.getColor().get().toString());
         if ( destinationMem!=null){
+            var reachableDestMem=agentState.getMemoryFragment("isDestinationReachable");
+            if(reachableDestMem==null||!reachableDestMem.getReachable()){
+                agentState.addMemoryFragment("isDestinationReachable",new AgentMemoryFragment(agentState.getPerception().isReachable(new Coordinate(agentState.getX(),agentState.getY()),destinationMem.getCoordinate())));
+            }
             var destinationCoordinate = destinationMem.getCoordinate();
             if (Environment.chebyshevDistance(destinationCoordinate, new Coordinate(agentState.getX(), agentState.getY())) <= 8) {
                 var PossibleCoordinatesForPackage = generateAllMovesFromCoordinate(new Coordinate(agentState.getX(), agentState.getY()));

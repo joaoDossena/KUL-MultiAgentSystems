@@ -3,7 +3,10 @@ package agent.behavior.impl.wander;
 import agent.AgentAction;
 import agent.AgentState;
 import environment.CellPerception;
+import environment.Coordinate;
 import environment.Perception;
+
+import java.util.List;
 
 public class BetterWander extends Wander {
 
@@ -33,4 +36,9 @@ public class BetterWander extends Wander {
 
         super.act(agentState, agentAction);
     }
+
+    protected List<Coordinate> prioritizeWithManhattan(List<Coordinate> possibleCurrentMoves, Perception currPerception, Coordinate destinationCoordinates) {
+        return currPerception.sortWithManhattanDistance(possibleCurrentMoves,destinationCoordinates.getX(),destinationCoordinates.getY());
+    }
+
 }
