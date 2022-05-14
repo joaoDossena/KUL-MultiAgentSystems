@@ -19,9 +19,12 @@ public class FindPacketButDestinationUnreachable extends Wander {
         }
         var destinationMem = agentState.getMemoryFragment(agentState.getColor().get().toString());
         if (destinationMem != null) {
-            var reachableDestMem=agentState.getMemoryFragment("isDestinationReachable");
-            if(reachableDestMem==null||!reachableDestMem.getReachable()){
-                agentState.addMemoryFragment("isDestinationReachable",new AgentMemoryFragment(agentState.getPerception().isReachable(new Coordinate(agentState.getX(),agentState.getY()),destinationMem.getCoordinate())));
+            var reachableDestMem= agentState.getMemoryFragment("isDestinationReachable");
+            if(reachableDestMem == null || !reachableDestMem.getReachable()){
+                Optional<Coordinate> reachableCoord = agentState.getPerception().isReachable(new Coordinate(agentState.getX(), agentState.getY()), destinationMem.getCoordinate());
+                if(reachableCoord.isPresent())
+                    agentState.addMemoryFragment("isDestinationReachable",new AgentMemoryFragment(reachableCoord.get()));
+                else throw new RuntimeException("FoundPacketButDestinationUnreachable: Trying to add destination to memory when it is unreachable");
             }
             var destinationCoordinate = destinationMem.getCoordinate();
             var targetCells=agentState.getPerception().getPacketCellsForColor(agentState.getColor().get());

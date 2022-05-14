@@ -32,10 +32,13 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
             throw new RuntimeException("Should carry when behavior is SpreadPacketsCloseToDestinationBehavior");
         }
         var destinationMem = agentState.getMemoryFragment(agentState.getColor().get().toString());
-        if ( destinationMem!=null){
-            var reachableDestMem=agentState.getMemoryFragment("isDestinationReachable");
-            if(reachableDestMem==null||!reachableDestMem.getReachable()){
-                agentState.addMemoryFragment("isDestinationReachable",new AgentMemoryFragment(agentState.getPerception().isReachable(new Coordinate(agentState.getX(),agentState.getY()),destinationMem.getCoordinate())));
+        if (destinationMem!=null){
+            var reachableDestMem = agentState.getMemoryFragment("isDestinationReachable");
+            if(reachableDestMem == null || !reachableDestMem.getReachable()){
+                Optional<Coordinate> reachableCoord = agentState.getPerception().isReachable(new Coordinate(agentState.getX(),agentState.getY()), destinationMem.getCoordinate());
+                if(reachableCoord.isPresent())
+                    agentState.addMemoryFragment("isDestinationReachable", new AgentMemoryFragment(reachableCoord.get()));
+                else throw new RuntimeException("SpreadPacketsCloseToDestinationBehavior: Trying to add destination to memory when it is unreachable");
             }
             var destinationCoordinate = destinationMem.getCoordinate();
             if (Environment.chebyshevDistance(destinationCoordinate, new Coordinate(agentState.getX(), agentState.getY())) <= 8) {
@@ -54,7 +57,7 @@ public class SpreadPacketsCloseToDestinationBehavior extends BetterWander {
         var sortedCoordinates = prioritizeWithManhattan(possibleCoordinatesForPackage,perception,destinationCoordinate);
         for( Coordinate coor : sortedCoordinates){
             if(perception.getCellPerceptionOnAbsPos(coor.getX(),coor.getY()).isWalkable())
-                if(perception.hasNoNeighbouringPacket(generateAllMovesFromCoordinate(coor))) return coor;
+                if(perception.hasNoBlockingNeighbour(generateAllMovesFromCoordinate(coor))) return coor;
         }
         return null;
     }

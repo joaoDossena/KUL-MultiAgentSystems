@@ -606,7 +606,7 @@ public class Perception {
         //packet touch other Packet(s) and it is reachable
         //packet is far from Destination and it is reachable
         return (isReachable(agentCoor,packetCoor).isPresent() &&
-                (!hasNoNeighbouringPacket(neighboursOfPacket) || Environment.chebyshevDistance(packetCoor,destinationCoor)>6));
+                (!hasNoBlockingNeighbour(neighboursOfPacket) || Environment.chebyshevDistance(packetCoor,destinationCoor)>6));
     }
 
     public Coordinate getShortestMoveToCell(CellPerception cell, List<Coordinate> moves, int agentX, int agentY) {
@@ -630,10 +630,12 @@ public class Perception {
         return minMove;
     }
 
-    public boolean hasNoNeighbouringPacket( List<Coordinate> neighbours) {
-        for(Coordinate neighbor:neighbours){
-            if(getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY()) != null &&
-                    getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY()).containsPacket())
+    public boolean hasNoBlockingNeighbour( List<Coordinate> neighbours) {
+        for(Coordinate neighbor : neighbours){
+            CellPerception cell = getCellPerceptionOnAbsPos(neighbor.getX(),neighbor.getY());
+
+            if(cell != null && (cell.containsPacket() || cell.containsAnyDestination()
+                    || cell.containsWall()))
                 return false;
         }
         return true;
