@@ -3,6 +3,7 @@ package agent;
 import agent.behavior.Behavior;
 import agent.behavior.BehaviorState;
 import environment.CellPerception;
+import environment.Coordinate;
 import environment.Perception;
 import environment.world.packet.Packet;
 import java.awt.Color;
@@ -156,4 +157,5 @@ public interface AgentState {
      * @param state The behavior state to switch to.
      */
     void setCurrentBehaviorState(BehaviorState state);
+
 }

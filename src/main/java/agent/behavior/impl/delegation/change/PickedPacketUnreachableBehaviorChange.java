@@ -12,9 +12,6 @@ public class PickedPacketUnreachableBehaviorChange extends BehaviorChange {
 
     @Override
     public boolean isSatisfied() {
-        System.out.println(" has color-----------------------------");
-        System.out.println(this.getAgentState()+" has color-----------------------------");
-
         var destinationMem = this.getAgentState().getMemoryFragment(this.getAgentState().getColor().get().toString());
         if (destinationMem != null) {
             var destinationCoordinate = destinationMem.getCoordinate();
