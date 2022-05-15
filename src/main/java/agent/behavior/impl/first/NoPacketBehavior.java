@@ -1,22 +1,47 @@
 package agent.behavior.impl.first;
 
 import agent.AgentAction;
+import agent.AgentCommunication;
 import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.impl.wander.Wander;
 import environment.CellPerception;
 import environment.Coordinate;
+import environment.Mail;
 import environment.Perception;
+import environment.world.agent.AgentRep;
+import environment.world.energystation.EnergyStation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class NoPacketBehavior extends Wander {
+    private final String ENERGY_STATIONS = "EnergyStations";
+
+    private boolean goToStation(AgentAction agentAction,Perception perception,AgentState agentState){
+        var currentEnergy=agentState.getBatteryState();
+        var memoryfragment=agentState.getMemoryFragment(ENERGY_STATIONS);
+        if(memoryfragment==null)return false;
+        var stations=memoryfragment.getCoordinates();
+        Coordinate destination=null;
+        stations= (ArrayList<Coordinate>) perception.shortWithManhattanDistance(stations,agentState.getX(),agentState.getY());
+        if(!agentState.hasCarry()) {
+            if ((currentEnergy-calculateDistanceWithEnergy(10,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1)))<400){
+                walkTowardsCoordinate(agentAction,agentState,new Coordinate(stations.get(0).getX(),stations.get(0).getY()-1));
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     @Override
     public void act(AgentState agentState, AgentAction agentAction) {
-
+        if(goToStation(agentAction,agentState.getPerception(),agentState)) return;
         Perception perception = agentState.getPerception();
+        checkForEnergyStations(agentState,perception);
         var neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){
@@ -42,15 +67,12 @@ public class NoPacketBehavior extends Wander {
         // Otherwise, look for closest packet.
         CellPerception minCell = perception.getClosestCell(packets, agentState.getX(), agentState.getY());
 
-        // Find the closest walkable move in the direction of minCell
-        List<Coordinate> moves = new ArrayList<>(List.of(
-                new Coordinate(1, 1), new Coordinate(-1, -1),
-                new Coordinate(1, -1), new Coordinate(-1, 1),
-                new Coordinate(1, 0), new Coordinate(-1, 0),
-                new Coordinate(0, 1), new Coordinate(0, -1)
-        ));
-
-        Coordinate minMove = perception.getShortestMoveToCell(minCell, moves, agentState.getX(), agentState.getY());
+        Optional<Coordinate> minMoveOpt = perception.getShortestMoveToCell(minCell, agentState.getX(), agentState.getY());
+        if(minMoveOpt.isEmpty()){
+            agentAction.skip();
+            return;
+        }
+        Coordinate minMove = minMoveOpt.get();
 
         agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(minMove.getX(), minMove.getY())));
         agentAction.step(agentState.getX() + minMove.getX(), agentState.getY() + minMove.getY());

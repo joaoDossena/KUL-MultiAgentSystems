@@ -4,16 +4,11 @@ import agent.behavior.Behavior;
 import agent.behavior.BehaviorState;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import environment.ActiveImp;
-import environment.ActiveItemID;
-import environment.CellPerception;
-import environment.EnergyValues;
-import environment.Mail;
-import environment.MailBuffer;
-import environment.Perception;
+import environment.*;
 import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
 import environment.world.destination.DestinationRep;
+import environment.world.energystation.EnergyStationRep;
 import environment.world.generator.PacketGenerator;
 import environment.world.packet.Packet;
 import environment.world.packet.PacketRep;
@@ -119,6 +114,11 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
         this.sendMessage(receiver.getName(), message);
     }
 
+    @Override
+    public final void sendMessage(AgentRep receiver, List<Coordinate> energyStations) {
+        this.sendCoordinatesInMessage(receiver.getName(), energyStations);
+    }
+
 
     /**
      * Create a mail from this AgentImp to <to> and with message <message> and add the resulting mail to the buffer of outgoing mails.
@@ -130,6 +130,15 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
         this.logger.fine(String.format("agentImp %d buffers a mail", getActiveItemID().getID()));
 
         Mail mail = new Mail(getName(), to, message);
+        this.getMailBuffer().addMail(mail);
+    }
+
+
+
+    private void sendCoordinatesInMessage(String to, List<Coordinate> stations) {
+        this.logger.fine(String.format("agentImp %d buffers a mail", getActiveItemID().getID()));
+
+        Mail mail = new Mail(getName(), to, stations);
         this.getMailBuffer().addMail(mail);
     }
 
@@ -181,8 +190,8 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
      * @return A collection with the received messages from other agents.
      */
     @Override
-    public Collection<Mail> getMessages() {
-        return messages;
+    public ArrayList<Mail> getMessages() {
+        return (ArrayList<Mail>) messages;
     }
 
     /**
@@ -441,7 +450,7 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
 
     private void concludeWithCondition(boolean condition, Outcome onSuccess) {
         var onFail = this.generateActionOutcome(getAgent().getBatteryState() > 0 ?
-                new InfSkip(getEnvironment(), getActiveItemID()) : new InfNOP(this.getEnvironment()));
+                new InfSkip(getEnvironment(), getActiveItemID()) : new InfNOP(this.getEnvironment(), this.getActiveItemID()));
 
         this.concludePhaseWith(condition ? onSuccess : onFail);
         this.committedAction = true;
@@ -626,6 +635,23 @@ public abstract class AgentImp extends ActiveImp implements AgentState, AgentCom
     }
 
 
+    @Override
+    public boolean seesEnergyStation() {
+        int vw = getPerception().getWidth();
+        int vh = getPerception().getHeight();
+        for (int i = 0; i < vw; i++) {
+            for (int j = 0; j < vh; j++) {
+                var per = this.getPerception().getCellAt(i, j);
+                if (per != null) {
+                    EnergyStationRep p = per.getRepOfType(EnergyStationRep.class);
+                    if (p != null) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Adds a memory fragment to this agent (if its memory is not full).

@@ -52,17 +52,18 @@ public class Perception {
     private final CellPerception[][] cells;
 
 
+
     //--------------------------------------------------------------------------
     //		CONSTRUCTOR
     //--------------------------------------------------------------------------
 
     /**
-     * Initializes a new Perception object
+     *  Initializes a new Perception object
      *
-     * @param width   width of the Perception
-     * @param height  height of the Perception
-     * @param offsetX horizontal offset of the Perception
-     * @param offsetY vertical offset of the Perception
+     * @param  width    width of the Perception
+     * @param  height   height of the Perception
+     * @param  offsetX  horizontal offset of the Perception
+     * @param  offsetY  vertical offset of the Perception
      */
     public Perception(int width, int height, int offsetX, int offsetY) {
         cells = new CellPerception[width][height];
@@ -84,7 +85,7 @@ public class Perception {
 
     /**
      * Gets a CellPerception from this Perception using absolute coordinates
-     * (the coordinates of the environment/worlds).
+     *  (the coordinates of the environment/worlds).
      *
      * @return The cell perception if x and y fall within this Perception's bounds, null otherwise.
      */
@@ -109,12 +110,13 @@ public class Perception {
     }
 
 
+
     /**
-     * Returns all Representations that are situated right next to the agent that issued this
-     * Perception.
+     *  Returns all Representations that are situated right next to the agent that issued this
+     *  Perception.
      *
-     * @return The Representations neighbouring the AgentRep of the agent that issued this
-     * Perception
+     * @return    The Representations neighbouring the AgentRep of the agent that issued this
+     *            Perception
      */
     public CellPerception[] getNeighbours() {
         CellPerception[] neighbours = new CellPerception[8]; // 8 squares surround the agentRep
@@ -133,23 +135,22 @@ public class Perception {
     /**
      * Returns all Representations that are situated right next to the agent that issued this
      * Perception. The cells are in successive order in the returning array:
-     * <p>
-     * 7 0 1
-     * 6 A 2
-     * 5 4 3
      *
-     * @return The Representations neighbouring the AgentRep of the agent that issued this
-     * Perception
+     *        7 0 1
+     *        6 A 2
+     *        5 4 3
+     *
+     * @return    The Representations neighbouring the AgentRep of the agent that issued this
+     *            Perception
      */
-
     public CellPerception[] getNeighboursInOrder() {
         CellPerception[] neighbours = new CellPerception[8]; // 8 squares surround the AgentRep
         int next = 0;
-        neighbours[next++] = getCellPerceptionOnRelPos(0, -1);
-        neighbours[next++] = getCellPerceptionOnRelPos(1, -1);
-        neighbours[next++] = getCellPerceptionOnRelPos(1, 0);
-        neighbours[next++] = getCellPerceptionOnRelPos(1, 1);
-        neighbours[next++] = getCellPerceptionOnRelPos(0, 1);
+        neighbours[next++] = getCellPerceptionOnRelPos( 0, -1);
+        neighbours[next++] = getCellPerceptionOnRelPos( 1, -1);
+        neighbours[next++] = getCellPerceptionOnRelPos( 1, 0);
+        neighbours[next++] = getCellPerceptionOnRelPos( 1, 1);
+        neighbours[next++] = getCellPerceptionOnRelPos( 0, 1);
         neighbours[next++] = getCellPerceptionOnRelPos(-1, 1);
         neighbours[next++] = getCellPerceptionOnRelPos(-1, 0);
         neighbours[next] = getCellPerceptionOnRelPos(-1, -1);
@@ -157,14 +158,16 @@ public class Perception {
     }
 
 
+
+
     /**
-     * Returns the distance between 2 coordinates
+     *  Returns the distance between 2 coordinates
      *
-     * @param x1 First position's X
-     * @param y1 First position's Y
-     * @param x2 Second position's X
-     * @param y2 Second position's Y
-     * @return The distance between these coordinates
+     * @param  x1   First position's X
+     * @param  y1   First position's Y
+     * @param  x2   Second position's X
+     * @param  y2   Second position's Y
+     * @return  The distance between these coordinates
      */
     public static int distance(int x1, int y1, int x2, int y2) {
         // Bird's-eye view (number of steps an agent would need to cover the distance)
@@ -176,13 +179,13 @@ public class Perception {
     }
 
     /**
-     * Returns the Manhattan distance between 2 coordinates
+     *  Returns the Manhattan distance between 2 coordinates
      *
-     * @param x1 First position's X
-     * @param y1 First position's Y
-     * @param x2 Second position's X
-     * @param y2 Second position's Y
-     * @return The Manhattan distance between these coordinates
+     * @param  x1   First position's X
+     * @param  y1   First position's Y
+     * @param  x2   Second position's X
+     * @param  y2   Second position's Y
+     * @return  The Manhattan distance between these coordinates
      */
     public static int manhattanDistance(int x1, int y1, int x2, int y2) {
         //Manhattan distance
@@ -190,22 +193,22 @@ public class Perception {
     }
 
     /**
-     * Returns the distance between 2 CellPerceptions
+     *  Returns the distance between 2 CellPerceptions
      *
      * @param ap1 the first CellPerception
      * @param ap2 the second CellPerception
-     * @return the distance between the two CellPerceptions
+     * @return    the distance between the two CellPerceptions
      */
     public static int distance(CellPerception ap1, CellPerception ap2) {
         return Math.max(Math.abs(ap2.getY() - ap1.getY()), Math.abs(ap2.getX() - ap1.getX()));
     }
 
     /**
-     * Returns the Manhattan distance between 2 CellPerceptions
+     *  Returns the Manhattan distance between 2 CellPerceptions
      *
      * @param ap1 the first CellPerception
      * @param ap2 the second CellPerception
-     * @return the manhattan distance between the two CellPerceptions
+     * @return    the manhattan distance between the two CellPerceptions
      */
     public static int ManhattanDistance(CellPerception ap1, CellPerception ap2) {
         return Math.abs(ap2.getY() - ap1.getY()) + Math.abs(ap2.getX() - ap1.getX());
@@ -221,18 +224,18 @@ public class Perception {
 
 
     /**
-     * Gets the X coordinate of the agent that issued this Perception
+     *  Gets the X coordinate of the agent that issued this Perception
      *
-     * @return This perception's selfX
+     * @return    This perception's selfX
      */
     public int getSelfX() {
         return selfX;
     }
 
     /**
-     * Gets the Y coordinate of the agent that issued this Perception
+     *  Gets the Y coordinate of the agent that issued this Perception
      *
-     * @return This perception's selfY
+     * @return    This perception's selfY
      */
     public int getSelfY() {
         return selfY;
@@ -241,8 +244,8 @@ public class Perception {
     /**
      * Sets the x-coordinate of the owner of this perception
      *
-     * @param x The x-coordinate of the self in this perception
-     *          (not in the world)
+     * @param  x  The x-coordinate of the self in this perception
+     *            (not in the world)
      */
     public void setSelfX(int x) {
         selfX = x;
@@ -251,44 +254,44 @@ public class Perception {
     /**
      * Sets the y-coordinate of the owner of this perception
      *
-     * @param y The y-coordinate of the self in this perception
-     *          (not in the world)
+     * @param  y  The y-coordinate of the self in this perception
+     *            (not in the world)
      */
     public void setSelfY(int y) {
         selfY = y;
     }
 
     /**
-     * Sets a given Representation at the given coordinates in this perception
+     *  Sets a given Representation at the given coordinates in this perception
      *
-     * @param x    The X coordinate
-     * @param y    The Y coordinate
-     * @param cell The Representation that is to be set here
+     * @param  x     The X coordinate
+     * @param  y     The Y coordinate
+     * @param  cell  The Representation that is to be set here
      */
     public void setCellPerceptionAt(int x, int y, CellPerception cell) {
         cells[x][y] = cell;
     }
 
     /**
-     * Sets the width of this Perception
+     *  Sets the width of this Perception
      *
-     * @param w The new width value
+     * @param  w  The new width value
      */
     private void setWidth(int w) {
         this.width = w;
     }
 
     /**
-     * Sets the height of this Perception
+     *  Sets the height of this Perception
      *
-     * @param h The new height value
+     * @param  h  The new height value
      */
     private void setHeight(int h) {
         this.height = h;
     }
 
     /**
-     * Returns the CellPerception that is positioned on the given coordinates in this Perception.
+     *  Returns the CellPerception that is positioned on the given coordinates in this Perception.
      */
     @Nullable
     public CellPerception getCellAt(int x, int y) {
@@ -300,18 +303,18 @@ public class Perception {
     }
 
     /**
-     * Gets the width of this Perception
+     *  Gets the width of this Perception
      *
-     * @return This Perception's width
+     * @return    This Perception's width
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Gets the height of this Perception
+     *  Gets the height of this Perception
      *
-     * @return This Perception's height
+     * @return    This Perception's height
      */
     public int getHeight() {
         return height;
@@ -321,7 +324,7 @@ public class Perception {
      * Gets the horizontal offset of this Perception with respect to the
      * coordinates of the environment/worlds.
      *
-     * @return The horizontal offset
+     * @return  The horizontal offset
      */
     public int getOffsetX() {
         return this.offsetX;
@@ -331,7 +334,7 @@ public class Perception {
      * Gets the vertical offset of this Perception with respect to the
      * coordinates of the environment/worlds.
      *
-     * @return The vertical offset
+     * @return  The vertical offset
      */
     public int getOffsetY() {
         return this.offsetY;
@@ -340,7 +343,7 @@ public class Perception {
     /**
      * Sets the horizontal offset of this Perception.
      *
-     * @param offsetX The new horizontal offset
+     * @param offsetX  The new horizontal offset
      */
     private void setOffsetX(int offsetX) {
         this.offsetX = offsetX;
@@ -349,16 +352,16 @@ public class Perception {
     /**
      * Sets the vertical offset of this Perception.
      *
-     * @param offsetY The new vertical offset
+     * @param offsetY  The new vertical offset
      */
     private void setOffsetY(int offsetY) {
         this.offsetY = offsetY;
     }
 
 
+
     /**
      * Determine the shape of the view that should be drawn in the environment.
-     *
      * @return A list of LinePoints that contains all the lines that should be drawn.
      */
     public List<LinePoints> getShape() {
@@ -393,6 +396,7 @@ public class Perception {
     }
 
 
+
     public void addRep(int i, int j, Representation rep) {
         cells[i][j].addRep(rep);
     }
@@ -401,8 +405,7 @@ public class Perception {
     public void nullifyCellAt(int i, int j) {
         try {
             cells[i][j] = null;
-        } catch (ArrayIndexOutOfBoundsException ignored) {
-        }
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
     }
 
     //--------------------------------------------------------------------------
@@ -410,11 +413,11 @@ public class Perception {
     //--------------------------------------------------------------------------
 
 
-    public List<CellPerception> getPacketCells() {
+    public List<CellPerception> getPacketCells(){
         List<CellPerception> cellsWithPackets = new ArrayList<>();
-        for (CellPerception[] cellLine : cells) {
-            for (CellPerception cell : cellLine) {
-                if (cell != null && cell.containsPacket()) {
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.containsPacket()){
                     cellsWithPackets.add(cell);
                 }
             }
@@ -447,11 +450,11 @@ public class Perception {
     }
 
     //TODO Our implementation
-    public List<CellPerception> getDestinationCells(Color color) {
+    public List<CellPerception> getDestinationCells(Color color){
         List<CellPerception> cellsWithDestination = new ArrayList<>();
-        for (CellPerception[] cellLine : cells) {
-            for (CellPerception cell : cellLine) {
-                if (cell != null && cell.containsDestination(color)) {
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.containsDestination(color)){
                     cellsWithDestination.add(cell);
                 }
             }
@@ -459,19 +462,19 @@ public class Perception {
         return cellsWithDestination;
     }
 
-    public Map<Color, CellPerception> getDestinationCells() {
-        Map<Color, CellPerception> cellsWithDestination = new HashMap<>();
-        for (CellPerception[] cellLine : cells) {
-            for (CellPerception cell : cellLine) {
-                if (cell != null && cell.getDestination() != null) {
-                    cellsWithDestination.put(cell.getDestination().getColor(), cell);
+    public Map<Color,CellPerception> getDestinationCells(){
+        Map<Color,CellPerception> cellsWithDestination = new HashMap<>();
+        for(CellPerception[] cellLine : cells){
+            for(CellPerception cell : cellLine){
+                if(cell!=null && cell.getDestination()!=null){
+                    cellsWithDestination.put(cell.getDestination().getColor(),cell);
                 }
             }
         }
         return cellsWithDestination;
     }
 
-    public List<Coordinate> sortWithManhattanDistance(List<Coordinate> possibleCells, int x, int y) {
+    public List<Coordinate> shortWithManhattanDistance(List<Coordinate> possibleCells, int x, int y){
         // TODO: Now we're using manhattanDistance distance, but in the future we might need to account for walls and stuff.
 
         HashMap<Coordinate, Integer> possibleWithDistanceMap = new HashMap<>();
@@ -530,7 +533,6 @@ public class Perception {
         }
         return minCell;
     }
-
     public Optional<Coordinate> getShortestMoveToCell(CellPerception cell, int agentX, int agentY) {
 
         List<Coordinate> moves = getPermittedMovesRel();
@@ -554,61 +556,6 @@ public class Perception {
         return Optional.of(minMove);
     }
 
-    public List<Coordinate> getPermittedMovesRel() {
-
-        return Coordinate.getNeighboursRelative().stream()
-                .filter(neighbour -> getCellPerceptionOnRelPos(neighbour.getX(), neighbour.getY()) != null)
-                .filter(neighbour -> getCellPerceptionOnRelPos(neighbour.getX(), neighbour.getY()).isWalkable())
-                .filter(neighbour -> !getCellPerceptionOnRelPos(neighbour.getX(), neighbour.getY()).containsAgent())
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-
-    public CellPerception[][] getAllVision() {
-        return cells;
-    }
-
-    public ArrayList<AgentRep> getVisibleAgents() {
-        ArrayList<AgentRep> agentReps = new ArrayList<>();
-        for (CellPerception[] cellLine : cells) {
-            for (CellPerception cell : cellLine) {
-                if (cell != null && cell.containsAgent()) {
-                    agentReps.add(cell.getAgentRepresentation().get());
-                }
-            }
-        }
-        return agentReps;
-    }
-
-    protected List<Coordinate> getWalkableNeighbours(Coordinate coordinate) {
-
-        return coordinate.getNeighboursAbsolute().stream()
-                .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()) != null)
-                .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).isWalkable())
-                .filter(neighbour -> !getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).containsAgent())
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    public boolean isNeighbour(Coordinate c1, Coordinate c2) {
-        return Math.abs(c1.getX() - c2.getX()) <= 1 && Math.abs(c1.getY() - c2.getY()) <= 1;
-    }
-
-    public List<Coordinate> calculateRoute(Coordinate from, Coordinate to) {
-        List<Coordinate> moves = new ArrayList<>(Collections.emptyList());
-        if(getCellPerceptionOnAbsPos(to.getX(), to.getY()) == null) return moves;
-        if(isNeighbour(from, to)){
-            moves.add(to);
-            return moves;
-        }
-        return aStar(from, getCellPerceptionOnAbsPos(to.getX(), to.getY()));
-    }
-
-    public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket, List<Coordinate> reachable,Coordinate destCoor,Coordinate packetCoor){
-        //packet touch other Packet(s) and it is reachable
-        //packet is far from Destination and it is reachable
-        return (!reachable.isEmpty() &&
-                (!hasNoBlockingNeighbour(neighboursOfPacket) ||Environment.euclideanDistance(packetCoor,destCoor)>7));
-    }
 
     public Coordinate getShortestMoveToCell(CellPerception cell, List<Coordinate> moves, int agentX, int agentY) {
         Coordinate minMove = moves.get(0);
@@ -630,6 +577,16 @@ public class Perception {
         }
         return minMove;
     }
+
+    public List<Coordinate> getPermittedMovesRel() {
+
+        return Coordinate.getNeighboursRelative().stream()
+                .filter(neighbour -> getCellPerceptionOnRelPos(neighbour.getX(), neighbour.getY()) != null)
+                .filter(neighbour -> getCellPerceptionOnRelPos(neighbour.getX(), neighbour.getY()).isWalkable())
+                .filter(neighbour -> !getCellPerceptionOnRelPos(neighbour.getX(), neighbour.getY()).containsAgent())
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
 
     public boolean hasNoBlockingNeighbour( List<Coordinate> neighbours) {
         for(Coordinate neighbor : neighbours){
@@ -688,6 +645,48 @@ public class Perception {
             }
         }
         return List.of();
+    }
+
+    public ArrayList<AgentRep> getVisibleAgents() {
+        ArrayList<AgentRep> agentReps = new ArrayList<>();
+        for (CellPerception[] cellLine : cells) {
+            for (CellPerception cell : cellLine) {
+                if (cell != null && cell.containsAgent()) {
+                    agentReps.add(cell.getAgentRepresentation().get());
+                }
+            }
+        }
+        return agentReps;
+    }
+
+    protected List<Coordinate> getWalkableNeighbours(Coordinate coordinate) {
+
+        return coordinate.getNeighboursAbsolute().stream()
+                .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()) != null)
+                .filter(neighbour -> getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).isWalkable())
+                .filter(neighbour -> !getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY()).containsAgent())
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public boolean isNeighbour(Coordinate c1, Coordinate c2) {
+        return Math.abs(c1.getX() - c2.getX()) <= 1 && Math.abs(c1.getY() - c2.getY()) <= 1;
+    }
+
+    public List<Coordinate> calculateRoute(Coordinate from, Coordinate to) {
+        List<Coordinate> moves = new ArrayList<>(Collections.emptyList());
+        if(getCellPerceptionOnAbsPos(to.getX(), to.getY()) == null) return moves;
+        if(isNeighbour(from, to)){
+            moves.add(to);
+            return moves;
+        }
+        return aStar(from, getCellPerceptionOnAbsPos(to.getX(), to.getY()));
+    }
+
+    public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket, List<Coordinate> reachable,Coordinate destCoor,Coordinate packetCoor){
+        //packet touch other Packet(s) and it is reachable
+        //packet is far from Destination and it is reachable
+        return (!reachable.isEmpty() &&
+                (!hasNoBlockingNeighbour(neighboursOfPacket) ||Environment.euclideanDistance(packetCoor,destCoor)>7));
     }
 
     private List<Coordinate> reconstructPath(Map<Coordinate, Coordinate> cameFrom, Coordinate current) {

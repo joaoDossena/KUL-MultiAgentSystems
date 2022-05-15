@@ -1,7 +1,10 @@
 package agent;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import environment.Coordinate;
 import environment.Mail;
 import environment.world.agent.AgentRep;
 
@@ -18,6 +21,7 @@ public interface AgentCommunication {
      */
     void sendMessage(AgentRep receiver, String message);
 
+    void sendMessage(AgentRep receiver, List<Coordinate> message);
 
     /**
      * Broadcast a message to all other agents.
@@ -53,7 +57,7 @@ public interface AgentCommunication {
      * Retrieve all the incoming messages.
      * @return A collection with the received messages from other agents.
      */
-    Collection<Mail> getMessages();
+    ArrayList<Mail> getMessages();
 
     /**
      * Clear the incoming message queue.
