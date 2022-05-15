@@ -56,7 +56,7 @@ public abstract class BehaviorV3 extends Behavior {
 
         var destinations = agentState.getPerception().getDestinationCells();
         destinations.forEach((color, cell) ->
-                agentState.addMemoryFragment(color.toString(), new AgentMemoryFragment(Coordinate.of(cell.getX(), cell.getY()))));
+                agentState.addMemoryFragment(color.toString(), new AgentMemoryFragment(cell.getX(), cell.getY())));
     }
 
     protected Optional<Coordinate> findBestMove(CellPerception minCell, AgentState agentState) {

@@ -8,12 +8,17 @@ import java.util.List;
 public class AgentMemoryFragment {
     private Coordinate coordinate = null;
     private boolean isReachable=false;
-    private List<Coordinate> coordinates=new ArrayList<>();
+    private List<Coordinate> coordinates;
 
     public AgentMemoryFragment(Coordinate coordinate) {
-        coordinates = new ArrayList<>();
-        addToCoordinatesList(coordinate);
+        this.coordinate=coordinate;
     }
+
+    public AgentMemoryFragment(int x,int y) {
+        coordinates = new ArrayList<>();
+        addToCoordinatesList(new Coordinate(x,y));
+    }
+
     public AgentMemoryFragment(Boolean isReachable){
         this.isReachable = isReachable;
     }

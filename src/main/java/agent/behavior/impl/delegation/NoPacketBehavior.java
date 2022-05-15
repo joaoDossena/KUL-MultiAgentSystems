@@ -37,7 +37,7 @@ public class NoPacketBehavior extends Wander {
             CellPerception packet = visiblePackets.get(0);
             List<Coordinate> path = perception.aStar(agentCoord, packet);
             if(path.isEmpty()) {
-                System.out.println("NoPacketBehaviour::moveUsingAStar: empty path");
+//                System.out.println("NoPacketBehaviour::moveUsingAStar: empty path");
             }
             else{
                 Coordinate step = path.get(1);

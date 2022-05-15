@@ -89,12 +89,10 @@ public class Wander extends Behavior {
             //  (when the agent is at any edge for example some moves are not possible)
             if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable() && !perception.getCellPerceptionOnRelPos(x, y).containsAgent()) {
                 agentState.addMemoryFragment("lastMove", new AgentMemoryFragment(new Coordinate(x, y)));
-                System.out.println("Step Agent ID:"+ agentState.getName());
                 agentAction.step(agentState.getX() + x, agentState.getY() + y);
                 return;
             }
         }
-        System.out.println("Skip Agent ID:"+ agentState.getName());
         agentAction.skip();
     }
 

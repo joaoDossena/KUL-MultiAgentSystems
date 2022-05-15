@@ -34,7 +34,7 @@ public abstract class SearchBehavior extends BehaviorV3 {
         }
 
         var bestMove = optimizedMoves.get(0);
-        agentState.addMemoryFragment(LAST_MOVES.name(), new AgentMemoryFragment(Coordinate.of(bestMove.getX(), bestMove.getY())));
+        agentState.addMemoryFragment(LAST_MOVES.name(), new AgentMemoryFragment(bestMove.getX(), bestMove.getY()));
         agentAction.step(agentState.getX() + bestMove.getX(), agentState.getY() + bestMove.getY());
     }
 

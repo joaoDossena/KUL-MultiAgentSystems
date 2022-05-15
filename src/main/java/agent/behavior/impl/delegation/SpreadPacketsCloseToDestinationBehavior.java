@@ -51,7 +51,7 @@ public class SpreadPacketsCloseToDestinationBehavior extends Wander {
                     Coordinate target = perception.getClosestToCoordinate(destinationMem.getCoordinate());
                     List<Coordinate> path = perception.aStar(agentCoord, perception.getCellPerceptionOnAbsPos(target.getX(),target.getY()));
                     if(path.isEmpty()) {
-                        System.out.println("SpreadPacketsCloseToDestinationBehavior::moveUsingAStar: empty path");
+                        //System.out.println("SpreadPacketsCloseToDestinationBehavior::moveUsingAStar: empty path");
                     }
                     else{
                         Coordinate step = path.get(1);

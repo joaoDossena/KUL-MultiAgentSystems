@@ -80,7 +80,7 @@ public class FindPacketButDestinationUnreachable extends Wander {
             if(agentState.getPerception().packetIsProblematic(generateTouchingCoordinates(packetCell.toCoordinate()), reachable,agentState.getMemoryFragment(agentState.getColor().get().toString()).getCoordinate(),packetCell.getCoordinate()))
             {
                 problematicPackets.put(packetCell, reachable);
-                System.out.println(agentState.getName() + " found a probl packet: ("+ packetCell.getX()+", "+packetCell.getY() + ")");
+//                System.out.println(agentState.getName() + " found a probl packet: ("+ packetCell.getX()+", "+packetCell.getY() + ")");
             }
         }
         return problematicPackets;

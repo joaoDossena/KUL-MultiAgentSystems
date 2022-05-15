@@ -42,7 +42,7 @@ public class HasPacketBehavior extends Wander {
             CellPerception dest = visibleDestinations.get(0);
             List<Coordinate> path = perception.aStar(agentCoord, dest);
             if(path.isEmpty()) {
-                System.out.println("HasPacketBehaviour::moveUsingAStar: empty path");
+//                System.out.println("HasPacketBehaviour::moveUsingAStar: empty path");
             }
             else{
                 Coordinate step = path.get(1);
@@ -56,7 +56,7 @@ public class HasPacketBehavior extends Wander {
             Coordinate target = perception.getClosestToCoordinate(agentMemoryDestination.getCoordinate());
             List<Coordinate> path = perception.aStar(agentCoord, perception.getCellPerceptionOnAbsPos(target.getX(),target.getY()));
             if(path.isEmpty()) {
-                System.out.println("HasPacketBehaviour::moveUsingAStar: empty path");
+//                System.out.println("HasPacketBehaviour::moveUsingAStar: empty path");
             }
             else{
                 Coordinate step = path.get(1);
