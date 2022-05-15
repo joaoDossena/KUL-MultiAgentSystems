@@ -525,4 +525,16 @@ public class Environment {
     public static int chebyshevDistance(int x1, int y1, int x2, int y2) {
         return Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1));
     }
+
+    public static double euclideanDistance(Coordinate c1, Coordinate c2) {
+
+        return Math.sqrt(
+                (c1.getX() - c2.getX()) * (c1.getX() - c2.getX())
+                        + (c1.getY() - c2.getY()) * (c1.getY() - c2.getY()));
+    }
+
+    public static int manhattanDistance(int x1, int y1, int x2, int y2) {
+        //Manhattan distance
+        return Math.abs(y2 - y1) + Math.abs(x2 - x1);
+    }
 }

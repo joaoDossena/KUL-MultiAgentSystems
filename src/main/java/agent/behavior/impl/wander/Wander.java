@@ -6,6 +6,7 @@ import agent.AgentMemoryFragment;
 import agent.AgentState;
 import agent.behavior.Behavior;
 import environment.Coordinate;
+import environment.Environment;
 import environment.Perception;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,6 +106,22 @@ public class Wander extends Behavior {
         }
         return res;
     }
+
+
+    public List<Coordinate> generateTouchingCoordinates(Coordinate coordinate) {
+        List<Coordinate> res = new ArrayList<>();
+
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x == 0 && y == 0)
+                    continue;
+                if(Environment.manhattanDistance(coordinate.getX() + x, coordinate.getY() + y,coordinate.getX(),coordinate.getY())==1)
+                  res.add(new Coordinate(coordinate.getX() + x, coordinate.getY() + y));
+            }
+        }
+        return res;
+    }
+
 
     public List<Coordinate> generateAllMovesFromCoordinate(Coordinate coordinate) {
         List<Coordinate> res = new ArrayList<>();

@@ -19,7 +19,7 @@ public class HasPacketBehavior extends Wander {
         var neighbours = perception.getNeighbours();
 
         for(CellPerception neighbor : neighbours){
-            if(neighbor != null && neighbor.containsDestination(agentState.getCarry().get().getColor())){
+            if(neighbor != null && neighbor.containsDestination(agentState.getColor().get())){
                 agentAction.putPacket(neighbor.getX(), neighbor.getY());
                 return;
             }
@@ -36,7 +36,7 @@ public class HasPacketBehavior extends Wander {
         String agentColor = agentState.getColor().get().toString();
 
         AgentMemoryFragment agentMemoryDestination = agentState.getMemoryFragment(agentColor);
-        List<CellPerception> visibleDestinations = perception.getDestinationCells(agentState.getCarry().get().getColor());
+        List<CellPerception> visibleDestinations = perception.getDestinationCells(agentState.getColor().get());
 
         if(!visibleDestinations.isEmpty()) {
             CellPerception dest = visibleDestinations.get(0);

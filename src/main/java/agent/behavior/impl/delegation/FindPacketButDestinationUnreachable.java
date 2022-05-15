@@ -33,9 +33,14 @@ public class FindPacketButDestinationUnreachable extends Wander {
             CellPerception nearestProblematicPacket = getNearestProblematicPacket(pathsToProblPackets);
 
             if (nearestProblematicPacket != null && pathsToProblPackets.size()>=2){
-                Coordinate step = pathsToProblPackets.get(nearestProblematicPacket).get(1);
-                agentAction.step(step.getX(), step.getY());
-                return;
+                try{
+                    Coordinate step = pathsToProblPackets.get(nearestProblematicPacket).get(1);
+                    agentAction.step(step.getX(), step.getY());
+                    return;
+                }
+                catch (Exception e){
+                    System.out.println(" Array Index out of Range----------------- ");
+                }
             }
 
             super.act(agentState,agentAction);
@@ -72,7 +77,7 @@ public class FindPacketButDestinationUnreachable extends Wander {
         for(CellPerception packetCell : packetCellsForColor){
             List<Coordinate> reachable = agentState.getPerception().calculateRoute(Coordinate.of(agentState.getX(), agentState.getY()), packetCell.toCoordinate());
 
-            if(agentState.getPerception().packetIsProblematic(generateAllMovesFromCoordinate(packetCell.toCoordinate()), reachable))
+            if(agentState.getPerception().packetIsProblematic(generateTouchingCoordinates(packetCell.toCoordinate()), reachable,agentState.getMemoryFragment(agentState.getColor().get().toString()).getCoordinate(),packetCell.getCoordinate()))
             {
                 problematicPackets.put(packetCell, reachable);
                 System.out.println(agentState.getName() + " found a probl packet: ("+ packetCell.getX()+", "+packetCell.getY() + ")");

@@ -603,11 +603,11 @@ public class Perception {
         return aStar(from, getCellPerceptionOnAbsPos(to.getX(), to.getY()));
     }
 
-    public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket, List<Coordinate> reachable){
+    public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket, List<Coordinate> reachable,Coordinate destCoor,Coordinate packetCoor){
         //packet touch other Packet(s) and it is reachable
         //packet is far from Destination and it is reachable
         return (!reachable.isEmpty() &&
-                (!hasNoBlockingNeighbour(neighboursOfPacket) ));
+                (!hasNoBlockingNeighbour(neighboursOfPacket) ||Environment.euclideanDistance(packetCoor,destCoor)>7));
     }
 
     public Coordinate getShortestMoveToCell(CellPerception cell, List<Coordinate> moves, int agentX, int agentY) {
@@ -716,7 +716,7 @@ public class Perception {
         CellPerception nearestCell = null;
         for(CellPerception[] cellsOfLine : cells)
             for(CellPerception cell : cellsOfLine){
-                if(euclideanDistance(cell.toCoordinate(), destCoordinate) < distance){
+                if(euclideanDistance(cell.toCoordinate(), destCoordinate) < distance && cell.isWalkable()){
                     distance = euclideanDistance(cell.toCoordinate(), destCoordinate);
                     nearestCell = cell;
                 }
