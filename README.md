@@ -1,7 +1,7 @@
-
 # General documentation for the PacketWorld Application
 
-This project contains code for the PacketWorld Application, a simple Multi-agent framework to develop and evaluate pickup and delivery problems.
+This project contains code for the PacketWorld Application, a simple Multi-agent framework to develop and evaluate
+pickup and delivery problems.
 
 <img src="/res/packetworld.gif" alt="The Packet World" width="350">
 
@@ -10,7 +10,6 @@ This project contains code for the PacketWorld Application, a simple Multi-agent
 ## Project structure
 
 The project consists of two main parts: (1) the source code and (2) configuration files.
-
 
 The source code is located under the `src` directory. In the source code you can find 6 main packages:
 
@@ -21,16 +20,17 @@ The source code is located under the `src` directory. In the source code you can
 - synchronizer: Classes used to realize synchronization in the application.
 - util: General purpose classes and functions used within the project.
 
+Configuration files can be found in the `configfiles` directory. A distinction is made between behaviors and
+environments. A behavior configuration file describes the different behavior states an agent can have, and how an agent
+can transition between these states.
 
-Configuration files can be found in the `configfiles` directory.
-A distinction is made between behaviors and environments. 
-A behavior configuration file describes the different behavior states an agent can have, and how an agent can transition between these states.
-
-An environment configuration file describes an environment in which the selected implementation is evaluated. The environment contains information about agents, packets, energy stations, etc.
+An environment configuration file describes an environment in which the selected implementation is evaluated. The
+environment contains information about agents, packets, energy stations, etc.
 
 ## Running the code
 
-The project uses Apache Maven as a build framework, and is written in Java version 17 or above. To compile the code, simply run the following command:
+The project uses Apache Maven as a build framework, and is written in Java version 17 or above. To compile the code,
+simply run the following command:
 
 `mvn compile`
 
@@ -46,11 +46,50 @@ Lastly, if you want to adhere to the coding style of the project, you can run th
 
 `mvn checkstyle:check`
 
-
 ## Final notes
 
-- To quickly get started, make sure to take a look at the example implementation provided in the configuration file `configfiles/behaviors/wander.txt` and the java source file `src/main/java/agent/behavior/wander/Wander.java`.
-- It is not necessary to manually edit environment configuration files. If you would like to test different scenarios than the ones already provided, 
-simply choose the _environment editor_ in the main menu of the application to edit or create new environments.
-- After (or during) a normal run, you can export the monitored actions of agents in your run together with some metadata about the run. Navigate to the _Actions_ window and click on the _export_ button. For batch runs this is done automatically by specifying the output file before starting the runs.
+- To quickly get started, make sure to take a look at the example implementation provided in the configuration
+  file `configfiles/behaviors/wander.txt` and the java source file `src/main/java/agent/behavior/wander/Wander.java`.
+- It is not necessary to manually edit environment configuration files. If you would like to test different scenarios
+  than the ones already provided, simply choose the _environment editor_ in the main menu of the application to edit or
+  create new environments.
+- After (or during) a normal run, you can export the monitored actions of agents in your run together with some metadata
+  about the run. Navigate to the _Actions_ window and click on the _export_ button. For batch runs this is done
+  automatically by specifying the output file before starting the runs.
+
+## Guide for our behavior implementations\
+
+##### behavior_v1
+
+Located in [behavior_v1.txt](configfiles/implementations/behavior_v1.txt), this implementation uses two main
+behaviours (NoPacketBehavior and HasPacketBehavior), and it should be used in the basic environments, namely:
+
+- basic-1-tutorial
+- basic-2-vision
+- basic-3-color
+- basic-4-complexity
+
+##### behavior_v3
+
+Located in [behavior_v3.txt](configfiles/implementations/behavior_v3.txt), this implementation is used to account for
+battery levels, and it should be used in the basic energy environments, namely:
+
+- energy-1
+- energy-2
+
+##### energy-advanced
+
+Located in [energy-advanced.txt](configfiles/implementations/energy-advanced.txt), this implementation is used in the
+advanced energy environment to account for opening narrow paths towards the energy stations:
+
+- energy-3
+
+##### task_delegation
+
+Located in [task_delegation.txt](configfiles/implementations/task_delegation.txt), this implementation is used in the
+task delegation environment for detecting and spreading problematic packets:
+
+- task-delegation
+
+
 
