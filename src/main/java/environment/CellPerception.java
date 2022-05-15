@@ -85,10 +85,6 @@ public class CellPerception {
         return null;
     }
 
-    public Coordinate toCoordinate(){
-        return new Coordinate(getX(),getY());
-    }
-
 
 
     /**

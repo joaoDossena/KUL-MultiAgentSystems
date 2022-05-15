@@ -474,7 +474,7 @@ public class Perception {
         return cellsWithDestination;
     }
 
-    public List<Coordinate> shortWithManhattanDistance(List<Coordinate> possibleCells, int x, int y){
+    public List<Coordinate> sortWithManhattanDistance(List<Coordinate> possibleCells, int x, int y){
         // TODO: Now we're using manhattanDistance distance, but in the future we might need to account for walls and stuff.
 
         HashMap<Coordinate, Integer> possibleWithDistanceMap = new HashMap<>();
@@ -645,6 +645,10 @@ public class Perception {
             }
         }
         return List.of();
+    }
+
+    public CellPerception[][] getAllVision() {
+        return cells;
     }
 
     public ArrayList<AgentRep> getVisibleAgents() {

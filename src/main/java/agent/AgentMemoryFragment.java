@@ -8,7 +8,7 @@ import java.util.List;
 public class AgentMemoryFragment {
     private Coordinate coordinate = null;
     private boolean isReachable=false;
-    private final List<Coordinate> coordinates;
+    private List<Coordinate> coordinates=new ArrayList<>();
 
     public AgentMemoryFragment(Coordinate coordinate) {
         coordinates = new ArrayList<>();

@@ -1,7 +1,7 @@
 description "Graph based behavior. Implementation of different behaviors."
 
 
-nbStates 3
+nbStates 2
 
 1 agent.behavior.impl.first.NoPacketBehavior
 nbArgs 0
@@ -9,11 +9,8 @@ nbArgs 0
 2 agent.behavior.impl.first.HasPacketBehavior
 nbArgs 0
 
-3 agent.behavior.impl.first.ChargeBehavior
-nbArgs 0
 
-
-nbChanges 4
+nbChanges 2
 
 # First change, from behavior with ID 1 to behavior with ID 2
 agent.behavior.impl.delegation.change.PickedPacketBehaviorChange
@@ -26,16 +23,4 @@ agent.behavior.impl.delegation.change.PutPacketBehaviorChange
 nbArgs 0
 priority 0
 source 2
-target 1
-
-agent.behavior.impl.first.change.ChargeBehaviorChange
-nbArgs 0
-priority 2
-source 1
-target 3
-
-agent.behavior.impl.first.change.FullyChargedBehaviorChange
-nbArgs 0
-priority 1
-source 3
 target 1
