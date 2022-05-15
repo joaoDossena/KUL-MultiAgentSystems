@@ -16,7 +16,7 @@ public class PickedPacketUnreachableBehaviorChange extends BehaviorChange {
         if (destinationMem != null) {
             var destinationCoordinate = destinationMem.getCoordinate();
             return this.getAgentState().hasCarry() &&
-                    this.getAgentState().getPerception().isReachable(new Coordinate(this.getAgentState().getX(), this.getAgentState().getY()), destinationCoordinate).isEmpty();
+                    this.getAgentState().getPerception().calculateRoute(new Coordinate(this.getAgentState().getX(), this.getAgentState().getY()), destinationCoordinate).isEmpty();
         } else {
             return false;
         }

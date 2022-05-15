@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import agent.AgentState;
 import environment.world.agent.AgentRep;
 import gui.video.ItemDrawer.LinePoints;
 
@@ -594,16 +593,14 @@ public class Perception {
         return Math.abs(c1.getX() - c2.getX()) <= 1 && Math.abs(c1.getY() - c2.getY()) <= 1;
     }
 
-    public List<Coordinate> isReachable(Coordinate from, Coordinate to) {
+    public List<Coordinate> calculateRoute(Coordinate from, Coordinate to) {
         List<Coordinate> moves = new ArrayList<>(Collections.emptyList());
         if(getCellPerceptionOnAbsPos(to.getX(), to.getY()) == null) return moves;
         if(isNeighbour(from, to)){
             moves.add(to);
             return moves;
         }
-        moves = aStar(from, getCellPerceptionOnAbsPos(to.getX(), to.getY()));
-        if(moves.isEmpty()) return moves;
-        return moves;
+        return aStar(from, getCellPerceptionOnAbsPos(to.getX(), to.getY()));
     }
 
     public boolean packetIsProblematic(List<Coordinate> neighboursOfPacket, List<Coordinate> reachable){
@@ -710,8 +707,22 @@ public class Perception {
                         + (c1.getY() - c2.getY()) * (c1.getY() - c2.getY()));
     }
 
-    public Coordinate getMoveFromAbsPositions(Coordinate from, Coordinate to){
+    public Coordinate getMoveFromAbsPositions(Coordinate from, Coordinate to) {
         return new Coordinate(to.getX() - from.getX(), to.getY() - from.getY());
+    }
+
+    public Coordinate getClosestToCoordinate(Coordinate destCoordinate) {
+        double distance = Double.MAX_VALUE;
+        CellPerception nearestCell = null;
+        for(CellPerception[] cellsOfLine : cells)
+            for(CellPerception cell : cellsOfLine){
+                if(euclideanDistance(cell.toCoordinate(), destCoordinate) < distance){
+                    distance = euclideanDistance(cell.toCoordinate(), destCoordinate);
+                    nearestCell = cell;
+                }
+            }
+
+        return nearestCell.toCoordinate();
     }
 }
 
