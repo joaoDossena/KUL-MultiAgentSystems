@@ -1,0 +1,101 @@
+description "Implementation for three different abstract behaviors. Action, Visible, Search"
+
+
+nbStates 7
+
+1 agent.behavior.impl.v3.packet.PacketSearchBehavior
+nbArgs 0
+
+2 agent.behavior.impl.v3.packet.PacketVisibleBehavior
+nbArgs 0
+
+3 agent.behavior.impl.v3.destination.DestinationSearchBehavior
+nbArgs 0
+
+4 agent.behavior.impl.v3.destination.DestinationVisibleBehavior
+nbArgs 0
+
+5 agent.behavior.impl.v3.energystation.EnergyStationSearchBehavior
+nbArgs 0
+
+6 agent.behavior.impl.advanced.AdvancedEnergyStationVisibleBehavior
+nbArgs 0
+
+7 agent.behavior.impl.advanced.AdvancedEnergyStationOccupiedBehavior
+nbArgs 0
+
+
+nbChanges 12
+
+agent.behavior.impl.v3.change.DetectedPacketBehaviorChange
+nbArgs 0
+priority 0
+source 1
+target 2
+
+agent.behavior.impl.v3.change.PickedPacketBehaviorChange
+nbArgs 0
+priority 0
+source 2
+target 3
+
+agent.behavior.impl.v3.change.DetectedDestinationBehaviorChange
+nbArgs 0
+priority 0
+source 3
+target 4
+
+agent.behavior.impl.v3.change.PutPacketBehaviorChange
+nbArgs 0
+priority 0
+source 4
+target 1
+
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 1
+target 5
+
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 2
+target 5
+
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 3
+target 5
+
+agent.behavior.impl.v3.change.NeedsChargingBehaviorChange
+nbArgs 0
+priority 100
+source 4
+target 5
+
+agent.behavior.impl.v3.change.DetectedEnergyStationBehaviorChange
+nbArgs 0
+priority 0
+source 5
+target 6
+
+agent.behavior.impl.v3.change.StopChargingBehaviorChange
+nbArgs 0
+priority 0
+source 6
+target 1
+
+agent.behavior.impl.advanced.change.EnergyStationOccupiedBehaviorChange
+nbArgs 0
+priority 1
+source 6
+target 7
+
+agent.behavior.impl.advanced.change.EnergyStationOpenBehaviorChange
+nbArgs 0
+priority 1
+source 7
+target 5
+
